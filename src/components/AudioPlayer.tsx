@@ -81,7 +81,7 @@ const AudioPlayer = ({ currentSong, queue, onNext, onPrevious }: AudioPlayerProp
   if (!currentSong) return null;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 bg-secondary/95 backdrop-blur-lg border-t border-border">
+    <div className="fixed bottom-0 left-[260px] right-0 z-50 bg-card/95 backdrop-blur-2xl border-t border-border/50 shadow-2xl">
       <audio
         ref={audioRef}
         onTimeUpdate={handleTimeUpdate}
@@ -89,56 +89,57 @@ const AudioPlayer = ({ currentSong, queue, onNext, onPrevious }: AudioPlayerProp
         onEnded={onNext}
       />
       
-      <div className="container mx-auto px-4 py-4">
+      <div className="container mx-auto px-6 py-3">
         {/* Progress bar */}
-        <div className="mb-4">
+        <div className="mb-3">
           <Slider
             value={[currentTime]}
             max={duration || 100}
             step={1}
             onValueChange={handleSeek}
-            className="w-full"
+            className="w-full cursor-pointer"
           />
-          <div className="flex justify-between text-xs text-muted-foreground mt-1">
-            <span>{formatTime(currentTime)}</span>
+          <div className="flex justify-between text-xs text-muted-foreground mt-1.5">
+            <span className="font-medium">{formatTime(currentTime)}</span>
             <span>{formatTime(duration)}</span>
           </div>
         </div>
 
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-6">
           {/* Song info */}
-          <div className="flex items-center gap-4 flex-1">
+          <div className="flex items-center gap-4 flex-1 min-w-0">
             <img
               src={currentSong.imageUrl}
               alt={currentSong.songName}
-              className="w-14 h-14 rounded-lg object-cover"
+              className="w-16 h-16 rounded-md object-cover shadow-lg"
             />
-            <div className="min-w-0">
-              <h4 className="font-semibold text-foreground truncate">{currentSong.songName}</h4>
+            <div className="min-w-0 flex-1">
+              <h4 className="font-bold text-base text-foreground truncate">{currentSong.songName}</h4>
               <p className="text-sm text-muted-foreground truncate">{currentSong.artistName}</p>
             </div>
           </div>
 
           {/* Controls */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
             <Button
               size="icon"
               variant="ghost"
               onClick={onPrevious}
               disabled={queue.length === 0}
+              className="hover:bg-muted"
             >
               <SkipBack className="w-5 h-5" />
             </Button>
             <Button
               size="icon"
               variant="default"
-              className="w-12 h-12 rounded-full hover-glow"
+              className="w-11 h-11 rounded-full hover-glow shadow-lg"
               onClick={togglePlay}
             >
               {isPlaying ? (
                 <Pause className="w-5 h-5 fill-current" />
               ) : (
-                <Play className="w-5 h-5 fill-current" />
+                <Play className="w-5 h-5 fill-current ml-0.5" />
               )}
             </Button>
             <Button
@@ -146,17 +147,19 @@ const AudioPlayer = ({ currentSong, queue, onNext, onPrevious }: AudioPlayerProp
               variant="ghost"
               onClick={onNext}
               disabled={queue.length === 0}
+              className="hover:bg-muted"
             >
               <SkipForward className="w-5 h-5" />
             </Button>
           </div>
 
           {/* Volume */}
-          <div className="flex items-center gap-2 flex-1 justify-end">
+          <div className="flex items-center gap-3 flex-1 justify-end min-w-0">
             <Button
               size="icon"
               variant="ghost"
               onClick={toggleMute}
+              className="hover:bg-muted"
             >
               {isMuted || volume === 0 ? (
                 <VolumeX className="w-5 h-5" />
@@ -169,7 +172,7 @@ const AudioPlayer = ({ currentSong, queue, onNext, onPrevious }: AudioPlayerProp
               max={1}
               step={0.01}
               onValueChange={handleVolumeChange}
-              className="w-24"
+              className="w-28 cursor-pointer"
             />
           </div>
         </div>

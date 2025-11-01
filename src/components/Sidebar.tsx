@@ -1,12 +1,18 @@
-import { Home, ListMusic, Upload, History, Info, Music, LogOut } from "lucide-react";
+import { Home, ListMusic, Upload, History, Info, LogOut, LogIn, Plus, Music, User } from "lucide-react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { cn } from "@/lib/utils";
-import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const Sidebar = () => {
-  const { user, isAdmin, signOut } = useAuth();
+  const { user, isAdmin } = useAuth();
   const navigate = useNavigate();
 
   const baseMenuItems = [
@@ -16,7 +22,6 @@ const Sidebar = () => {
     { icon: Info, label: "About", path: "/about" },
   ];
 
-  // Only show upload for admin users
   const menuItems = isAdmin
     ? [
         ...baseMenuItems.slice(0, 2),
@@ -26,89 +31,118 @@ const Sidebar = () => {
     : baseMenuItems;
 
   const handleSignOut = async () => {
-    await signOut();
+    await supabase.auth.signOut();
     navigate("/auth");
+    toast.success("Signed out successfully");
   };
 
   return (
-    <aside className="fixed left-0 top-0 h-screen w-[240px] bg-sidebar border-r border-sidebar-border flex flex-col z-50">
+    <div className="fixed left-0 top-0 h-screen w-[260px] bg-sidebar-background border-r border-sidebar-border flex flex-col">
       {/* Logo */}
-      <div className="px-6 py-8">
-        <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
-            <Music className="w-7 h-7 text-primary-foreground" />
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold text-foreground tracking-tight">MONK</h1>
-            <p className="text-[10px] text-muted-foreground tracking-wider">ENTERTAINMENT</p>
-          </div>
-        </div>
+      <div className="p-6 pb-4">
+        <h1 className="text-xl font-bold bg-gradient-to-r from-primary to-green-400 bg-clip-text text-transparent">
+          MONK ENTERTAINMENT
+        </h1>
       </div>
 
       {/* Navigation */}
       <nav className="flex-1 px-3 space-y-1">
+        {/* Create Dropdown */}
+        {user && (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button 
+                variant="secondary" 
+                className="w-full justify-start gap-3 mb-3 h-11 font-semibold"
+              >
+                <Plus className="w-5 h-5" />
+                Create
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent 
+              align="start" 
+              className="w-56 bg-popover border-border z-50"
+            >
+              <DropdownMenuItem asChild>
+                <NavLink to="/playlist" className="flex items-center gap-2 cursor-pointer">
+                  <ListMusic className="w-4 h-4" />
+                  <span>New Playlist</span>
+                </NavLink>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <NavLink to="/playlist" className="flex items-center gap-2 cursor-pointer">
+                  <Music className="w-4 h-4" />
+                  <span>Playlist Folder</span>
+                </NavLink>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
+
         {menuItems.map((item) => (
           <NavLink
             key={item.path}
             to={item.path}
             className={({ isActive }) =>
-              cn(
-                "flex items-center gap-4 px-4 py-3 rounded-xl transition-all duration-200",
-                "hover:bg-sidebar-accent/60",
+              `flex items-center gap-3 px-4 py-2.5 rounded-md mb-0.5 transition-all ${
                 isActive
-                  ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium"
-                  : "text-sidebar-foreground/70 hover:text-sidebar-foreground"
-              )
+                  ? "bg-sidebar-accent text-primary font-semibold"
+                  : "text-sidebar-foreground/80 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground"
+              }`
             }
           >
-            <item.icon className="w-5 h-5 flex-shrink-0" />
-            <span className="text-[15px]">{item.label}</span>
+            <item.icon className="w-5 h-5" />
+            <span className="text-sm">{item.label}</span>
           </NavLink>
         ))}
       </nav>
 
-      {/* User Profile Footer */}
-      <div className="p-4 border-t border-sidebar-border/50 space-y-3">
+      {/* User Section */}
+      <div className="p-4 border-t border-sidebar-border bg-sidebar-background/80">
         {user ? (
-          <>
+          <div className="space-y-3">
             <div className="flex items-center gap-3 px-2">
-              <Avatar className="w-10 h-10 border-2 border-primary/20">
-                <AvatarFallback className="bg-gradient-primary text-primary-foreground font-semibold">
-                  {user.email?.[0].toUpperCase()}
-                </AvatarFallback>
-              </Avatar>
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-green-400 flex items-center justify-center shadow-lg">
+                <User className="w-5 h-5 text-black" />
+              </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-foreground truncate">{user.email}</p>
+                <p className="text-sm font-semibold text-sidebar-foreground truncate">
+                  {user.email?.split('@')[0]}
+                </p>
                 {isAdmin && (
-                  <span className="text-[11px] text-primary font-semibold">Admin</span>
+                  <span className="text-xs text-primary font-medium">Admin Access</span>
                 )}
               </div>
             </div>
             <Button
-              variant="outline"
-              size="sm"
-              className="w-full rounded-lg hover:bg-destructive/10 hover:text-destructive hover:border-destructive/30"
               onClick={handleSignOut}
+              variant="ghost"
+              size="sm"
+              className="w-full justify-start gap-2 text-muted-foreground hover:bg-sidebar-accent hover:text-foreground"
             >
-              <LogOut className="w-4 h-4 mr-2" />
-              Sign Out
+              <LogOut className="w-4 h-4" />
+              <span className="text-sm">Sign Out</span>
             </Button>
-          </>
+          </div>
         ) : (
-          <Button
-            variant="default"
-            size="sm"
-            className="w-full rounded-lg"
-            onClick={() => navigate("/auth")}
-          >
-            Sign In
-          </Button>
+          <NavLink to="/auth">
+            <Button
+              variant="default"
+              className="w-full justify-center gap-2 font-semibold"
+            >
+              <LogIn className="w-4 h-4" />
+              Sign In
+            </Button>
+          </NavLink>
         )}
-        <div className="text-[10px] text-muted-foreground/60 text-center pt-1">
-          © 2025 Monk Entertainment
+        
+        <div className="mt-4 pt-3 border-t border-sidebar-border/50">
+          <p className="text-xs text-muted-foreground/60 text-center">
+            © 2024 Monk Entertainment
+          </p>
         </div>
       </div>
-    </aside>
+    </div>
   );
 };
 
