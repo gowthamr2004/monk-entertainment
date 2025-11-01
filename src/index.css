@@ -96,3 +96,198 @@ All colors MUST be HSL.
     @apply bg-card/40 backdrop-blur-xl border border-border/50;
   }
 }
+
+/* ============================================
+   RESPONSIVE MEDIA QUERIES FOR ALL DEVICES
+   ============================================ */
+
+/* Extra Small Devices (Phones in portrait, 0-640px) */
+@media (max-width: 640px) {
+  :root {
+    --sidebar-width: 0px;
+  }
+
+  body {
+    font-size: 14px;
+  }
+
+  h1 {
+    @apply text-2xl;
+  }
+
+  h2 {
+    @apply text-xl;
+  }
+
+  h3 {
+    @apply text-lg;
+  }
+
+  /* Hide sidebar on mobile */
+  aside[data-sidebar="sidebar"] {
+    @apply hidden;
+  }
+
+  /* Full width content on mobile */
+  main {
+    @apply ml-0 w-full;
+  }
+
+  /* Audio player full width */
+  .audio-player {
+    @apply left-0 w-full;
+  }
+
+  /* Stack cards vertically */
+  .grid {
+    @apply grid-cols-2 gap-2;
+  }
+
+  /* Mobile padding adjustments */
+  .container {
+    @apply px-3;
+  }
+
+  /* Mobile button sizes */
+  button {
+    @apply text-sm px-3 py-1.5;
+  }
+}
+
+/* Small Devices (Phones in landscape, 641-768px) */
+@media (min-width: 641px) and (max-width: 768px) {
+  :root {
+    --sidebar-width: 70px;
+  }
+
+  body {
+    font-size: 15px;
+  }
+
+  h1 {
+    @apply text-3xl;
+  }
+
+  h2 {
+    @apply text-2xl;
+  }
+
+  /* Compact sidebar */
+  aside[data-sidebar="sidebar"] {
+    @apply w-[70px];
+  }
+
+  main {
+    @apply ml-[70px];
+  }
+
+  .audio-player {
+    @apply left-[70px] w-[calc(100%-70px)];
+  }
+
+  .grid {
+    @apply grid-cols-3 gap-3;
+  }
+}
+
+/* Medium Devices (Tablets, 769-1024px) */
+@media (min-width: 769px) and (max-width: 1024px) {
+  :root {
+    --sidebar-width: 200px;
+  }
+
+  h1 {
+    @apply text-4xl;
+  }
+
+  h2 {
+    @apply text-3xl;
+  }
+
+  aside[data-sidebar="sidebar"] {
+    @apply w-[200px];
+  }
+
+  main {
+    @apply ml-[200px];
+  }
+
+  .audio-player {
+    @apply left-[200px] w-[calc(100%-200px)];
+  }
+
+  .grid {
+    @apply grid-cols-3 gap-4;
+  }
+}
+
+/* Large Devices (Desktops, 1025-1440px) */
+@media (min-width: 1025px) and (max-width: 1440px) {
+  :root {
+    --sidebar-width: 260px;
+  }
+
+  aside[data-sidebar="sidebar"] {
+    @apply w-[260px];
+  }
+
+  main {
+    @apply ml-[260px];
+  }
+
+  .audio-player {
+    @apply left-[260px] w-[calc(100%-260px)];
+  }
+
+  .grid {
+    @apply grid-cols-4 gap-4;
+  }
+}
+
+/* Extra Large Devices (Large desktops, 1441px+) */
+@media (min-width: 1441px) {
+  :root {
+    --sidebar-width: 280px;
+  }
+
+  aside[data-sidebar="sidebar"] {
+    @apply w-[280px];
+  }
+
+  main {
+    @apply ml-[280px];
+  }
+
+  .audio-player {
+    @apply left-[280px] w-[calc(100%-280px)];
+  }
+
+  .grid {
+    @apply grid-cols-5 gap-5;
+  }
+
+  .container {
+    @apply max-w-screen-2xl;
+  }
+}
+
+/* Responsive Utilities */
+@media (max-width: 640px) {
+  .mobile-hidden {
+    @apply hidden;
+  }
+
+  .mobile-visible {
+    @apply block;
+  }
+}
+
+@media (min-width: 641px) {
+  .mobile-visible {
+    @apply hidden;
+  }
+
+  .desktop-visible {
+    @apply block;
+  }
+}

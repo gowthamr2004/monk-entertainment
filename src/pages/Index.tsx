@@ -36,7 +36,7 @@ const Index = () => {
   return (
     <div className="flex min-h-screen bg-background">
       <Sidebar />
-      <div className="flex-1 ml-[260px]">
+      <div className="flex-1 ml-0 sm:ml-[70px] md:ml-[200px] lg:ml-[260px] xl:ml-[280px]">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/playlist" element={<Playlist />} />
