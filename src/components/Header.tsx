@@ -1,4 +1,4 @@
-import { Search, User, Menu } from "lucide-react";
+import { Search, User } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,7 +16,6 @@ interface HeaderProps {
   onTypeChange: (value: string) => void;
   selectedLanguage: string;
   onLanguageChange: (value: string) => void;
-  onMenuClick: () => void;
 }
 
 const Header = ({
@@ -26,21 +25,10 @@ const Header = ({
   onTypeChange,
   selectedLanguage,
   onLanguageChange,
-  onMenuClick,
 }: HeaderProps) => {
   return (
     <header className="sticky top-0 z-40 bg-background/95 backdrop-blur-sm border-b border-border">
       <div className="flex items-center gap-4 p-4">
-        {/* Profile/Menu Button */}
-        <Button 
-          variant="ghost" 
-          size="icon" 
-          className="rounded-full flex-shrink-0"
-          onClick={onMenuClick}
-        >
-          <Menu className="w-5 h-5" />
-        </Button>
-
         {/* Search */}
         <div className="flex-1 max-w-2xl relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />

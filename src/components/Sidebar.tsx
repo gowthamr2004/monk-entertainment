@@ -1,4 +1,4 @@
-import { Home, ListMusic, Upload, History, Info, LogOut, LogIn, Plus, Music, User, X } from "lucide-react";
+import { Home, ListMusic, Upload, History, Info, LogOut, LogIn, Plus, Music, User } from "lucide-react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
@@ -11,12 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-interface SidebarProps {
-  isOpen: boolean;
-  onClose: () => void;
-}
-
-const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
+const Sidebar = () => {
   const { user, isAdmin } = useAuth();
   const navigate = useNavigate();
 
@@ -42,31 +37,9 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
   };
 
   return (
-    <>
-      {/* Backdrop for mobile */}
-      {isOpen && (
-        <div 
-          className="fixed inset-0 bg-black/50 z-40 md:hidden"
-          onClick={onClose}
-        />
-      )}
-      
-      {/* Sidebar */}
-      <div className={`fixed left-0 top-0 h-screen w-[280px] bg-sidebar-background border-r border-sidebar-border flex flex-col z-50 transition-transform duration-300 ease-in-out ${
-        isOpen ? 'translate-x-0' : '-translate-x-full'
-      } md:translate-x-0 md:w-[70px] lg:w-[260px] xl:w-[280px]`}>
-        {/* Close button - only on mobile */}
-        <Button
-          variant="ghost"
-          size="icon"
-          className="absolute top-4 right-4 md:hidden"
-          onClick={onClose}
-        >
-          <X className="w-5 h-5" />
-        </Button>
-
-        {/* Logo */}
-        <div className="p-3 sm:p-4 md:p-6 pb-3 sm:pb-4">
+    <div className="fixed left-0 top-0 h-screen w-0 sm:w-[70px] md:w-[200px] lg:w-[260px] xl:w-[280px] bg-sidebar-background border-r border-sidebar-border flex flex-col overflow-hidden transition-all duration-300">
+      {/* Logo */}
+      <div className="p-3 sm:p-4 md:p-6 pb-3 sm:pb-4">
         <h1 className="text-base sm:text-lg md:text-xl font-bold bg-gradient-to-r from-primary to-green-400 bg-clip-text text-transparent truncate">
           <span className="hidden md:inline">MONK ENTERTAINMENT</span>
           <span className="md:hidden">MONK</span>
@@ -170,8 +143,7 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
           </p>
         </div>
       </div>
-      </div>
-    </>
+    </div>
   );
 };
 
