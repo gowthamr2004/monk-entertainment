@@ -68,8 +68,7 @@ const Sidebar = ({ isOpen = false, onClose }: SidebarProps) => {
         {/* Logo */}
         <div className="p-3 sm:p-4 md:p-6 pb-3 sm:pb-4">
         <h1 className="text-base sm:text-lg md:text-xl font-bold bg-gradient-to-r from-primary to-green-400 bg-clip-text text-transparent truncate">
-          <span className="hidden md:inline">MONK ENTERTAINMENT</span>
-          <span className="md:hidden">MONK</span>
+          MONK ENTERTAINMENT
         </h1>
       </div>
 
@@ -80,11 +79,11 @@ const Sidebar = ({ isOpen = false, onClose }: SidebarProps) => {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button 
-                variant="secondary" 
-                className="w-full justify-center sm:justify-start gap-0 sm:gap-2 md:gap-3 mb-3 h-10 sm:h-11 font-semibold px-2 sm:px-3"
+              variant="secondary" 
+                className="w-full justify-start gap-2 md:gap-3 mb-3 h-10 sm:h-11 font-semibold px-3"
               >
                 <Plus className="w-5 h-5" />
-                <span className="hidden md:inline">Create</span>
+                <span>Create</span>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent 
@@ -112,7 +111,7 @@ const Sidebar = ({ isOpen = false, onClose }: SidebarProps) => {
             key={item.path}
             to={item.path}
             className={({ isActive }) =>
-              `flex items-center justify-center sm:justify-start gap-0 sm:gap-2 md:gap-3 px-2 sm:px-3 md:px-4 py-2 sm:py-2.5 rounded-md mb-0.5 transition-all ${
+              `flex items-center justify-start gap-2 md:gap-3 px-3 md:px-4 py-2 sm:py-2.5 rounded-md mb-0.5 transition-all ${
                 isActive
                   ? "bg-sidebar-accent text-primary font-semibold"
                   : "text-sidebar-foreground/80 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground"
@@ -120,7 +119,7 @@ const Sidebar = ({ isOpen = false, onClose }: SidebarProps) => {
             }
           >
             <item.icon className="w-5 h-5 flex-shrink-0" />
-            <span className="text-xs sm:text-sm hidden md:inline">{item.label}</span>
+            <span className="text-xs sm:text-sm">{item.label}</span>
           </NavLink>
         ))}
       </nav>
@@ -129,11 +128,11 @@ const Sidebar = ({ isOpen = false, onClose }: SidebarProps) => {
       <div className="p-2 sm:p-3 md:p-4 border-t border-sidebar-border bg-sidebar-background">
         {user ? (
           <div className="space-y-2 sm:space-y-3">
-            <div className="flex items-center justify-center sm:justify-start gap-0 sm:gap-2 md:gap-3 px-0 sm:px-2">
+            <div className="flex items-center justify-start gap-2 md:gap-3 px-2">
               <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-primary to-green-400 flex items-center justify-center shadow-lg">
                 <User className="w-4 h-4 sm:w-5 sm:h-5 text-black" />
               </div>
-              <div className="flex-1 min-w-0 hidden md:block">
+              <div className="flex-1 min-w-0">
                 <p className="text-sm font-semibold text-sidebar-foreground truncate">
                   {user.email?.split('@')[0]}
                 </p>
@@ -146,30 +145,30 @@ const Sidebar = ({ isOpen = false, onClose }: SidebarProps) => {
               onClick={handleSignOut}
               variant="ghost"
               size="sm"
-              className="w-full justify-center sm:justify-start gap-2 text-muted-foreground hover:bg-sidebar-accent hover:text-foreground px-2"
+              className="w-full justify-start gap-2 text-muted-foreground hover:bg-sidebar-accent hover:text-foreground px-2"
             >
               <LogOut className="w-4 h-4" />
-              <span className="text-xs sm:text-sm hidden md:inline">Sign Out</span>
+              <span className="text-xs sm:text-sm">Sign Out</span>
             </Button>
           </div>
         ) : (
           <NavLink to="/auth">
             <Button
               variant="default"
-              className="w-full justify-center gap-2 font-semibold px-2"
+              className="w-full justify-start gap-2 font-semibold px-2"
             >
               <LogIn className="w-4 h-4" />
-              <span className="hidden md:inline">Sign In</span>
+              <span>Sign In</span>
             </Button>
           </NavLink>
         )}
         
-        <div className="mt-3 sm:mt-4 pt-2 sm:pt-3 border-t border-sidebar-border/50 hidden md:block">
+        <div className="mt-3 sm:mt-4 pt-2 sm:pt-3 border-t border-sidebar-border/50">
           <p className="text-xs text-muted-foreground/60 text-center">
             © 2024 Monk Entertainment
           </p>
         </div>
-        </div>
+      </div>
       </div>
     </>
   );
