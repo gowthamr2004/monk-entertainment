@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
-import { Plus, Music, ArrowLeft, Play } from "lucide-react";
+import { Plus, Music, ArrowLeft, Play, User } from "lucide-react";
 import { Playlist as PlaylistType, Song } from "@/types/song";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -10,7 +10,11 @@ import SongCard from "@/components/SongCard";
 import AudioPlayer from "@/components/AudioPlayer";
 import { useAuth } from "@/contexts/AuthContext";
 
-const Playlist = () => {
+interface PlaylistProps {
+  onMenuClick?: () => void;
+}
+
+const Playlist = ({ onMenuClick }: PlaylistProps = {}) => {
   const { isAdmin, user } = useAuth();
   const [playlists, setPlaylists] = useState<PlaylistType[]>([]);
   const [newPlaylistName, setNewPlaylistName] = useState("");
@@ -249,11 +253,21 @@ const Playlist = () => {
   return (
     <div className="min-h-screen p-8">
       <div className="max-w-4xl mx-auto">
-        <div className="mb-8 animate-fade-in">
-          <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-primary to-green-400 bg-clip-text text-transparent">
-            Your Playlists
-          </h1>
-          <p className="text-muted-foreground">Create and manage your music collections</p>
+        <div className="flex items-center gap-3 mb-8 animate-fade-in">
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="rounded-full"
+            onClick={onMenuClick}
+          >
+            <User className="w-6 h-6" />
+          </Button>
+          <div>
+            <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-primary to-green-400 bg-clip-text text-transparent">
+              Your Playlists
+            </h1>
+            <p className="text-muted-foreground">Create and manage your music collections</p>
+          </div>
         </div>
 
         {/* Create Playlist */}

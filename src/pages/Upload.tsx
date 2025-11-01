@@ -14,9 +14,13 @@ import {
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { Upload as UploadIcon } from "lucide-react";
+import { Upload as UploadIcon, User } from "lucide-react";
 
-const Upload = () => {
+interface UploadProps {
+  onMenuClick?: () => void;
+}
+
+const Upload = ({ onMenuClick }: UploadProps = {}) => {
   const navigate = useNavigate();
   const { isAdmin, user } = useAuth();
   const [isUploading, setIsUploading] = useState(false);
@@ -130,13 +134,23 @@ const Upload = () => {
   return (
     <div className="min-h-screen p-8">
       <div className="max-w-2xl mx-auto">
-        <div className="mb-8 animate-fade-in">
-          <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-primary to-green-400 bg-clip-text text-transparent">
-            Upload New Song
-          </h1>
-          <p className="text-muted-foreground">
-            Add a new song or BGM to the library
-          </p>
+        <div className="flex items-center gap-3 mb-8 animate-fade-in">
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="rounded-full"
+            onClick={onMenuClick}
+          >
+            <User className="w-6 h-6" />
+          </Button>
+          <div>
+            <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-primary to-green-400 bg-clip-text text-transparent">
+              Upload New Song
+            </h1>
+            <p className="text-muted-foreground">
+              Add a new song or BGM to the library
+            </p>
+          </div>
         </div>
 
         <Card className="p-6 bg-card border-border animate-fade-in">

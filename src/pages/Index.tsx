@@ -41,15 +41,15 @@ const Index = () => {
   return (
     <div className="flex min-h-screen bg-background">
       <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
-      <div className="flex-1 ml-0 md:ml-[200px] lg:ml-[260px] xl:ml-[280px]">
+      <div className="flex-1">
         <Routes>
           <Route path="/" element={<Home onMenuClick={() => setIsSidebarOpen(true)} />} />
-          <Route path="/playlist" element={<Playlist />} />
-          <Route path="/upload" element={<Upload />} />
-          <Route path="/history" element={<History />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/search" element={<Search />} />
-          <Route path="/settings" element={<Settings />} />
+          <Route path="/playlist" element={<Playlist onMenuClick={() => setIsSidebarOpen(true)} />} />
+          <Route path="/upload" element={<Upload onMenuClick={() => setIsSidebarOpen(true)} />} />
+          <Route path="/history" element={<History onMenuClick={() => setIsSidebarOpen(true)} />} />
+          <Route path="/about" element={<About onMenuClick={() => setIsSidebarOpen(true)} />} />
+          <Route path="/search" element={<Search onMenuClick={() => setIsSidebarOpen(true)} />} />
+          <Route path="/settings" element={<Settings onMenuClick={() => setIsSidebarOpen(true)} />} />
         </Routes>
       </div>
       <BottomNav />

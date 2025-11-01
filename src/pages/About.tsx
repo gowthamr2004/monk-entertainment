@@ -1,7 +1,12 @@
 import { Card } from "@/components/ui/card";
-import { Music, Download, Search, Upload, Users, Headphones } from "lucide-react";
+import { Music, Download, Search, Upload, Users, Headphones, User } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
-const About = () => {
+interface AboutProps {
+  onMenuClick?: () => void;
+}
+
+const About = ({ onMenuClick }: AboutProps = {}) => {
   const features = [
     {
       icon: Search,
@@ -38,6 +43,18 @@ const About = () => {
   return (
     <div className="min-h-screen p-8">
       <div className="max-w-6xl mx-auto">
+        {/* Menu Button */}
+        <div className="mb-8">
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="rounded-full"
+            onClick={onMenuClick}
+          >
+            <User className="w-6 h-6" />
+          </Button>
+        </div>
+        
         {/* Hero Section */}
         <div className="mb-16 text-center animate-fade-in">
           <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-primary to-green-400 bg-clip-text text-transparent">

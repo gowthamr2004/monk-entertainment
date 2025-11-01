@@ -1,7 +1,11 @@
 import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
-import { Clock, Music } from "lucide-react";
+import { Clock, Music, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
+
+interface HistoryProps {
+  onMenuClick?: () => void;
+}
 
 interface HistorySong {
   id: string;
@@ -14,7 +18,7 @@ interface HistorySong {
   audio_url: string;
 }
 
-const History = () => {
+const History = ({ onMenuClick }: HistoryProps = {}) => {
   const [history, setHistory] = useState<HistorySong[]>([]);
 
   useEffect(() => {
@@ -32,18 +36,30 @@ const History = () => {
   return (
     <div className="min-h-screen p-8">
       <div className="max-w-4xl mx-auto">
-        <div className="mb-8 animate-fade-in flex items-center justify-between">
-          <div>
-            <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-primary to-green-400 bg-clip-text text-transparent">
-              Recently Played
-            </h1>
-            <p className="text-muted-foreground">Your listening history</p>
+        <div className="mb-8 animate-fade-in">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="rounded-full"
+                onClick={onMenuClick}
+              >
+                <User className="w-6 h-6" />
+              </Button>
+              <div>
+                <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-primary to-green-400 bg-clip-text text-transparent">
+                  Recently Played
+                </h1>
+                <p className="text-muted-foreground">Your listening history</p>
+              </div>
+            </div>
+            {history.length > 0 && (
+              <Button variant="outline" onClick={handleClearHistory}>
+                Clear History
+              </Button>
+            )}
           </div>
-          {history.length > 0 && (
-            <Button variant="outline" onClick={handleClearHistory}>
-              Clear History
-            </Button>
-          )}
         </div>
 
         {history.length === 0 ? (

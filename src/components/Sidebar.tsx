@@ -43,23 +43,23 @@ const Sidebar = ({ isOpen = false, onClose }: SidebarProps) => {
 
   return (
     <>
-      {/* Backdrop - only on mobile/tablet when open */}
+      {/* Backdrop when open */}
       {isOpen && (
         <div 
-          className="fixed inset-0 bg-black z-40 md:hidden"
+          className="fixed inset-0 bg-black/50 z-40"
           onClick={onClose}
         />
       )}
 
       {/* Sidebar */}
       <div className={`fixed left-0 top-0 h-screen w-[280px] md:w-[200px] lg:w-[260px] xl:w-[280px] bg-sidebar-background border-r border-sidebar-border flex flex-col overflow-hidden transition-transform duration-300 ease-in-out z-50 shadow-xl ${
-        isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
+        isOpen ? 'translate-x-0' : '-translate-x-full'
       }`}>
-        {/* Close button - only on mobile/tablet */}
+        {/* Close button */}
         <Button
           variant="ghost"
           size="icon"
-          className="absolute top-4 right-4 md:hidden"
+          className="absolute top-4 right-4"
           onClick={onClose}
         >
           <X className="w-5 h-5" />

@@ -160,8 +160,8 @@ const Home = ({ onMenuClick }: HomeProps = {}) => {
       {/* Header */}
       <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-border/50">
         <div className="px-3 sm:px-4 md:px-6 lg:px-8 py-3 sm:py-4">
-          <div className="flex items-center justify-between gap-2 sm:gap-3 md:gap-4 mb-2 sm:mb-3 md:hidden">
-            {/* Profile Icon for Mobile/Tablet - triggers sidebar */}
+          <div className="flex items-center justify-between gap-2 sm:gap-3 md:gap-4 mb-2 sm:mb-3">
+            {/* Menu Icon - triggers sidebar on all devices */}
             <Button 
               variant="ghost" 
               size="icon" 
@@ -171,7 +171,7 @@ const Home = ({ onMenuClick }: HomeProps = {}) => {
               <User className="w-6 h-6" />
             </Button>
 
-            {/* Channel Name on Mobile/Tablet */}
+            {/* Channel Name */}
             <h1 className="text-sm sm:text-base font-bold bg-gradient-to-r from-primary to-green-400 bg-clip-text text-transparent">
               MONK ENTERTAINMENT
             </h1>

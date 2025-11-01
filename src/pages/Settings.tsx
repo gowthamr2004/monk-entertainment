@@ -5,7 +5,11 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
-const Settings = () => {
+interface SettingsProps {
+  onMenuClick?: () => void;
+}
+
+const Settings = ({ onMenuClick }: SettingsProps = {}) => {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
 
@@ -50,6 +54,14 @@ const Settings = () => {
     <div className="min-h-screen bg-background p-6 pb-24">
       <div className="max-w-4xl mx-auto">
         <div className="flex items-center gap-3 mb-8">
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="rounded-full"
+            onClick={onMenuClick}
+          >
+            <User className="w-6 h-6" />
+          </Button>
           <SettingsIcon className="w-8 h-8" />
           <h1 className="text-4xl font-bold">Settings</h1>
         </div>
