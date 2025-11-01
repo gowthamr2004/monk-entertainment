@@ -69,8 +69,8 @@ const Sidebar = ({ isOpen = false, onClose }: SidebarProps) => {
 
       {/* Navigation */}
       <nav className="flex-1 px-2 sm:px-3 space-y-1 pt-4">
-        {/* Create Dropdown */}
-        {user && (
+        {/* Create Dropdown - Only for admins */}
+        {user && isAdmin && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button 
