@@ -1,76 +1,64 @@
-import { Search, User } from "lucide-react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Home, Search, Bell, User } from "lucide-react";
+import { Button } from "./ui/button";
+import { Input } from "./ui/input";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-interface HeaderProps {
-  searchQuery: string;
-  onSearchChange: (value: string) => void;
-  selectedType: string;
-  onTypeChange: (value: string) => void;
-  selectedLanguage: string;
-  onLanguageChange: (value: string) => void;
-}
+const Header = () => {
+  const [searchQuery, setSearchQuery] = useState("");
+  const navigate = useNavigate();
 
-const Header = ({
-  searchQuery,
-  onSearchChange,
-  selectedType,
-  onTypeChange,
-  selectedLanguage,
-  onLanguageChange,
-}: HeaderProps) => {
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/search?q=${searchQuery}`);
+    }
+  };
+
   return (
-    <header className="sticky top-0 z-40 bg-background/95 backdrop-blur-sm border-b border-border">
-      <div className="flex items-center gap-4 p-4">
-        {/* Search */}
-        <div className="flex-1 max-w-2xl relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-          <Input
-            type="text"
-            placeholder="Search songs, artists, movies..."
-            value={searchQuery}
-            onChange={(e) => onSearchChange(e.target.value)}
-            className="pl-10 bg-secondary border-border"
-          />
+    <header className="fixed top-0 left-0 sm:left-[70px] md:left-[200px] lg:left-[260px] xl:left-[280px] right-0 z-40 bg-black/95 backdrop-blur-md border-b border-border/30">
+      <div className="px-4 py-2 flex items-center justify-between gap-4">
+        <div className="flex items-center gap-2">
+          <Button
+            size="icon"
+            variant="ghost"
+            className="rounded-full bg-black/40 hover:bg-black/60"
+            onClick={() => navigate("/")}
+          >
+            <Home className="w-5 h-5" />
+          </Button>
         </div>
 
-        {/* Filters */}
-        <Select value={selectedType} onValueChange={onTypeChange}>
-          <SelectTrigger className="w-32 bg-secondary">
-            <SelectValue placeholder="Type" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Types</SelectItem>
-            <SelectItem value="Song">Song</SelectItem>
-            <SelectItem value="BGM">BGM</SelectItem>
-          </SelectContent>
-        </Select>
+        <form onSubmit={handleSearch} className="flex-1 max-w-2xl">
+          <div className="relative">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+            <Input
+              type="text"
+              placeholder="What do you want to play?"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-12 pr-4 h-12 bg-card/50 border-border/50 rounded-full"
+            />
+          </div>
+        </form>
 
-        <Select value={selectedLanguage} onValueChange={onLanguageChange}>
-          <SelectTrigger className="w-32 bg-secondary">
-            <SelectValue placeholder="Language" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All</SelectItem>
-            <SelectItem value="Tamil">Tamil</SelectItem>
-            <SelectItem value="Telugu">Telugu</SelectItem>
-            <SelectItem value="Hindi">Hindi</SelectItem>
-            <SelectItem value="Malayalam">Malayalam</SelectItem>
-            <SelectItem value="English">English</SelectItem>
-          </SelectContent>
-        </Select>
-
-        {/* Profile */}
-        <Button variant="ghost" size="icon" className="rounded-full">
-          <User className="w-5 h-5" />
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            size="icon"
+            variant="ghost"
+            className="rounded-full hidden sm:flex"
+          >
+            <Bell className="w-5 h-5" />
+          </Button>
+          <Button
+            size="icon"
+            variant="ghost"
+            className="rounded-full bg-primary"
+            onClick={() => navigate("/settings")}
+          >
+            <User className="w-5 h-5" />
+          </Button>
+        </div>
       </div>
     </header>
   );

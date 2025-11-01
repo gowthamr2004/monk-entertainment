@@ -48,9 +48,9 @@ const Search = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background p-6 pb-24">
-      <div className="max-w-7xl mx-auto">
-        <h1 className="text-4xl font-bold mb-8">Search</h1>
+    <div className="min-h-screen bg-background pb-32 md:pb-24 pt-16 md:pt-20">
+      <div className="max-w-7xl mx-auto px-4">
+        <h1 className="text-3xl font-bold mb-6">Search</h1>
         
         <div className="relative mb-8">
           <SearchIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />

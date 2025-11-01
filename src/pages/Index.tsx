@@ -1,6 +1,7 @@
 import { Routes, Route, useLocation, Navigate } from "react-router-dom";
 import Sidebar from "@/components/Sidebar";
 import BottomNav from "@/components/BottomNav";
+import Header from "@/components/Header";
 import Home from "./Home";
 import Playlist from "./Playlist";
 import Upload from "./Upload";
@@ -37,9 +38,10 @@ const Index = () => {
   }
 
   return (
-    <div className="flex min-h-screen bg-background">
+    <div className="flex min-h-screen bg-black">
       <Sidebar />
       <div className="flex-1 ml-0 sm:ml-[70px] md:ml-[200px] lg:ml-[260px] xl:ml-[280px]">
+        <Header />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/playlist" element={<Playlist />} />

@@ -1,7 +1,5 @@
 import { useState, useEffect } from "react";
-import { Search, Play } from "lucide-react";
-import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Play } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Song } from "@/types/song";
 import { toast } from "sonner";
@@ -150,48 +148,37 @@ const Home = () => {
   }
 
   return (
-    <div className="min-h-screen pb-32 bg-gradient-to-b from-background via-background to-sidebar-background">
+    <div className="min-h-screen pb-32 md:pb-24 pt-16 md:pt-20 bg-gradient-to-b from-background via-background to-sidebar-background">
       <ParticleBackground />
       
       {/* Header */}
-      <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-border/50">
+      <div className="sticky top-16 md:top-20 z-30 bg-background/80 backdrop-blur-xl border-b border-border/50">
         <div className="px-3 sm:px-4 md:px-6 lg:px-8 py-3 sm:py-4">
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 md:gap-4">
-            <div className="relative flex-1 max-w-full sm:max-w-md">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground" />
-              <Input
-                placeholder="Search songs, artists..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-9 sm:pl-10 bg-secondary/50 border-border/50 h-10 sm:h-11 rounded-full text-sm"
-              />
-            </div>
-            <div className="flex gap-2 sm:gap-3">
-              <Select value={selectedType} onValueChange={setSelectedType}>
-                <SelectTrigger className="flex-1 sm:w-[120px] md:w-[140px] bg-secondary/50 border-border/50 text-xs sm:text-sm">
-                  <SelectValue placeholder="Type" />
-                </SelectTrigger>
-                <SelectContent className="bg-popover border-border z-50">
-                  {types.map((type) => (
-                    <SelectItem key={type} value={type}>
-                      {type === "all" ? "All Types" : type}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <Select value={selectedLanguage} onValueChange={setSelectedLanguage}>
-                <SelectTrigger className="flex-1 sm:w-[120px] md:w-[140px] bg-secondary/50 border-border/50 text-xs sm:text-sm">
-                  <SelectValue placeholder="Language" />
-                </SelectTrigger>
-                <SelectContent className="bg-popover border-border z-50">
-                  {languages.map((lang) => (
-                    <SelectItem key={lang} value={lang}>
-                      {lang === "all" ? "All Languages" : lang}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+          <div className="flex items-center gap-2">
+            <Button
+              variant={selectedType === "all" ? "default" : "secondary"}
+              size="sm"
+              onClick={() => setSelectedType("all")}
+              className="rounded-full px-4"
+            >
+              All
+            </Button>
+            <Button
+              variant={selectedType === "Song" ? "default" : "secondary"}
+              size="sm"
+              onClick={() => setSelectedType("Song")}
+              className="rounded-full px-4"
+            >
+              Music
+            </Button>
+            <Button
+              variant={selectedType === "BGM" ? "default" : "secondary"}
+              size="sm"
+              onClick={() => setSelectedType("BGM")}
+              className="rounded-full px-4"
+            >
+              Podcasts
+            </Button>
           </div>
         </div>
       </div>

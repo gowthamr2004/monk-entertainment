@@ -1,9 +1,10 @@
-import { Settings as SettingsIcon, User, Bell, Lock, HelpCircle, LogOut } from "lucide-react";
+import { Zap, TrendingUp, Clock, Settings as SettingsIcon, LogOut, ChevronRight, User as UserIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Separator } from "@/components/ui/separator";
 
 const Settings = () => {
   const { user, signOut } = useAuth();
@@ -19,88 +20,84 @@ const Settings = () => {
     }
   };
 
-  const settingsSections = [
-    {
-      icon: User,
-      title: "Account",
-      description: "Manage your account settings",
-      items: ["Profile", "Email & Password", "Privacy"],
-    },
-    {
-      icon: Bell,
-      title: "Notifications",
-      description: "Manage your notifications",
-      items: ["Push Notifications", "Email Updates"],
-    },
-    {
-      icon: Lock,
-      title: "Security",
-      description: "Keep your account secure",
-      items: ["Two-Factor Authentication", "Login History"],
-    },
-    {
-      icon: HelpCircle,
-      title: "Help & Support",
-      description: "Get help with the app",
-      items: ["FAQ", "Contact Support", "Report a Problem"],
-    },
+  const menuItems = [
+    { icon: Zap, label: "Your Premium", badge: "Family" },
+    { icon: TrendingUp, label: "What's new" },
+    { icon: TrendingUp, label: "Your Sound Capsule" },
+    { icon: Clock, label: "Recents" },
+    { icon: SettingsIcon, label: "Settings and privacy" },
   ];
 
   return (
-    <div className="min-h-screen bg-background p-6 pb-24">
-      <div className="max-w-4xl mx-auto">
-        <div className="flex items-center gap-3 mb-8">
-          <SettingsIcon className="w-8 h-8" />
-          <h1 className="text-4xl font-bold">Settings</h1>
-        </div>
-
+    <div className="min-h-screen bg-background pb-32 md:pb-24 pt-16 md:pt-20">
+      <div className="max-w-2xl mx-auto px-4">
+        {/* Profile Section */}
         {user && (
-          <Card className="mb-6 bg-card/50 border-border/50">
-            <CardHeader>
-              <CardTitle>Account Information</CardTitle>
-              <CardDescription>{user.email}</CardDescription>
-            </CardHeader>
-          </Card>
+          <div className="mb-6">
+            <div className="flex items-center gap-4 mb-6">
+              <Avatar className="w-16 h-16 bg-purple-500">
+                <AvatarFallback className="bg-purple-500 text-white text-2xl">
+                  {user.email?.[0].toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+              <div>
+                <h1 className="text-2xl font-bold">{user.email?.split('@')[0]}</h1>
+                <Button variant="link" className="p-0 h-auto text-muted-foreground">
+                  View profile
+                </Button>
+              </div>
+            </div>
+
+            <Separator className="my-6" />
+
+            {/* Add Account Button */}
+            <div className="flex items-center gap-4 mb-6">
+              <div className="w-12 h-12 rounded-full bg-card flex items-center justify-center border-2 border-dashed border-border">
+                <UserIcon className="w-6 h-6 text-muted-foreground" />
+              </div>
+              <span className="text-base text-muted-foreground">Add account</span>
+            </div>
+          </div>
         )}
 
-        <div className="space-y-4">
-          {settingsSections.map((section) => (
-            <Card key={section.title} className="bg-card/50 border-border/50">
-              <CardHeader>
-                <div className="flex items-center gap-3">
-                  <section.icon className="w-6 h-6 text-primary" />
-                  <div>
-                    <CardTitle className="text-lg">{section.title}</CardTitle>
-                    <CardDescription>{section.description}</CardDescription>
-                  </div>
+        <Separator className="my-6" />
+
+        {/* Menu Items */}
+        <div className="space-y-1">
+          {menuItems.map((item) => (
+            <Button
+              key={item.label}
+              variant="ghost"
+              className="w-full justify-start h-auto py-4 px-2 hover:bg-card/50"
+            >
+              <div className="flex items-center justify-between w-full">
+                <div className="flex items-center gap-4">
+                  <item.icon className="w-6 h-6" />
+                  <span className="text-base">{item.label}</span>
                 </div>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  {section.items.map((item) => (
-                    <Button
-                      key={item}
-                      variant="ghost"
-                      className="w-full justify-start"
-                    >
-                      {item}
-                    </Button>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+                {item.badge && (
+                  <span className="px-3 py-1 bg-blue-500/20 text-blue-400 rounded-full text-sm">
+                    {item.badge}
+                  </span>
+                )}
+                {!item.badge && <ChevronRight className="w-5 h-5 text-muted-foreground" />}
+              </div>
+            </Button>
           ))}
         </div>
 
         {user && (
-          <Button
-            onClick={handleSignOut}
-            variant="destructive"
-            className="w-full mt-6"
-          >
-            <LogOut className="w-4 h-4 mr-2" />
-            Sign Out
-          </Button>
+          <>
+            <Separator className="my-6" />
+            <Button
+              onClick={handleSignOut}
+              variant="ghost"
+              className="w-full justify-start text-destructive hover:text-destructive hover:bg-destructive/10"
+            >
+              <LogOut className="w-5 h-5 mr-3" />
+              Sign Out
+            </Button>
+          </>
         )}
       </div>
     </div>
