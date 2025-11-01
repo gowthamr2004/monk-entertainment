@@ -251,9 +251,9 @@ const Playlist = ({ onMenuClick }: PlaylistProps = {}) => {
   }
 
   return (
-    <div className="min-h-screen p-8">
-      <div className="max-w-4xl mx-auto">
-        <div className="flex items-center gap-3 mb-8 animate-fade-in">
+    <div className="min-h-screen p-4 sm:p-6 lg:p-8 pb-24">
+      <div className="max-w-7xl mx-auto">
+        <div className="flex items-center gap-3 mb-6 sm:mb-8 animate-fade-in">
           <Button 
             variant="ghost" 
             size="icon" 
@@ -263,25 +263,25 @@ const Playlist = ({ onMenuClick }: PlaylistProps = {}) => {
             <User className="w-6 h-6" />
           </Button>
           <div>
-            <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-primary to-green-400 bg-clip-text text-transparent">
+            <h1 className="text-3xl sm:text-4xl font-bold mb-1 sm:mb-2 bg-gradient-to-r from-primary to-green-400 bg-clip-text text-transparent">
               Your Playlists
             </h1>
-            <p className="text-muted-foreground">Create and manage your music collections</p>
+            <p className="text-sm sm:text-base text-muted-foreground">Create and manage your music collections</p>
           </div>
         </div>
 
         {/* Create Playlist */}
-        <Card className="p-6 mb-8 bg-card border-border animate-fade-in">
-          <h2 className="text-xl font-semibold mb-4">Create New Playlist</h2>
-          <div className="flex gap-3">
+        <Card className="p-4 sm:p-6 mb-6 sm:mb-8 bg-card border-border animate-fade-in">
+          <h2 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4">Create New Playlist</h2>
+          <div className="flex flex-col sm:flex-row gap-3">
             <Input
               placeholder="Enter playlist name"
               value={newPlaylistName}
               onChange={(e) => setNewPlaylistName(e.target.value)}
               onKeyPress={(e) => e.key === "Enter" && handleCreatePlaylist()}
-              className="bg-secondary"
+              className="bg-secondary flex-1"
             />
-            <Button onClick={handleCreatePlaylist} className="whitespace-nowrap">
+            <Button onClick={handleCreatePlaylist} className="whitespace-nowrap w-full sm:w-auto">
               <Plus className="w-4 h-4 mr-2" />
               Create
             </Button>
@@ -290,27 +290,27 @@ const Playlist = ({ onMenuClick }: PlaylistProps = {}) => {
 
         {/* Playlists Grid */}
         {playlists.length === 0 ? (
-          <div className="text-center py-20">
-            <Music className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
-            <p className="text-xl text-muted-foreground">No playlists yet</p>
-            <p className="text-sm text-muted-foreground mt-2">
+          <div className="text-center py-16 sm:py-20">
+            <Music className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-4 text-muted-foreground" />
+            <p className="text-lg sm:text-xl text-muted-foreground">No playlists yet</p>
+            <p className="text-sm text-muted-foreground mt-2 px-4">
               Create your first playlist to organize your favorite songs
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
             {playlists.map((playlist, index) => (
               <Card
                 key={playlist.id}
-                className="p-6 bg-card border-border hover:bg-card/80 transition-all cursor-pointer hover-scale animate-fade-in"
+                className="p-4 sm:p-6 bg-card border-border hover:bg-card/80 transition-all cursor-pointer hover-scale animate-fade-in"
                 style={{ animationDelay: `${index * 0.1}s` }}
                 onClick={() => setSelectedPlaylist(playlist)}
               >
-                <div className="aspect-square rounded-lg bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center mb-4">
-                  <Music className="w-12 h-12 text-primary" />
+                <div className="aspect-square rounded-lg bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center mb-3 sm:mb-4">
+                  <Music className="w-10 h-10 sm:w-12 sm:h-12 text-primary" />
                 </div>
-                <h3 className="font-semibold text-lg mb-1">{playlist.name}</h3>
-                <p className="text-sm text-muted-foreground">
+                <h3 className="font-semibold text-base sm:text-lg mb-1 truncate">{playlist.name}</h3>
+                <p className="text-xs sm:text-sm text-muted-foreground">
                   {playlist.songs.length} {playlist.songs.length === 1 ? "song" : "songs"}
                 </p>
               </Card>
