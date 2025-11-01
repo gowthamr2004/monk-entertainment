@@ -154,43 +154,42 @@ const Home = ({ onMenuClick }: HomeProps = {}) => {
   }
 
   return (
-    <div className="min-h-screen pb-32 md:pb-24 bg-background">
+    <div className="min-h-screen pb-32 bg-gradient-to-b from-background via-background to-sidebar-background">
       <ParticleBackground />
       
-      {/* Header - Fixed at top */}
-      <div className="sticky top-0 z-40 bg-card/95 backdrop-blur-xl border-b border-border">
-        <div className="px-4 md:px-6 lg:px-8 py-3 md:py-4">
-          {/* Mobile/Tablet Header */}
-          <div className="flex items-center justify-between gap-3 mb-3 md:hidden">
+      {/* Header */}
+      <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-border/50">
+        <div className="px-3 sm:px-4 md:px-6 lg:px-8 py-3 sm:py-4">
+          <div className="flex items-center justify-between gap-2 sm:gap-3 md:gap-4 mb-2 sm:mb-3 md:hidden">
+            {/* Profile Icon for Mobile/Tablet - triggers sidebar */}
             <Button 
               variant="ghost" 
               size="icon" 
-              className="rounded-full flex-shrink-0 hover:bg-accent"
+              className="rounded-full flex-shrink-0"
               onClick={onMenuClick}
             >
-              <User className="w-5 h-5" />
+              <User className="w-6 h-6" />
             </Button>
 
-            <h1 className="text-base font-bold bg-gradient-to-r from-primary to-green-400 bg-clip-text text-transparent">
+            {/* Channel Name on Mobile/Tablet */}
+            <h1 className="text-sm sm:text-base font-bold bg-gradient-to-r from-primary to-green-400 bg-clip-text text-transparent">
               MONK ENTERTAINMENT
             </h1>
           </div>
 
-          {/* Search and Filters */}
-          <div className="flex flex-col md:flex-row items-stretch md:items-center gap-3">
-            <div className="relative flex-1 max-w-full md:max-w-md">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 md:gap-4">
+            <div className="relative flex-1 max-w-full sm:max-w-md">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground" />
               <Input
-                placeholder="Search songs, artists, movies..."
+                placeholder="Search songs, artists..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 bg-secondary border-border h-10 rounded-lg text-sm"
+                className="pl-9 sm:pl-10 bg-secondary/50 border-border/50 h-10 sm:h-11 rounded-full text-sm"
               />
             </div>
-            
-            <div className="flex gap-2">
+            <div className="flex gap-2 sm:gap-3">
               <Select value={selectedType} onValueChange={setSelectedType}>
-                <SelectTrigger className="flex-1 md:w-32 bg-secondary border-border text-sm">
+                <SelectTrigger className="flex-1 sm:w-[120px] md:w-[140px] bg-secondary/50 border-border/50 text-xs sm:text-sm">
                   <SelectValue placeholder="Type" />
                 </SelectTrigger>
                 <SelectContent className="bg-popover border-border z-50">
@@ -202,7 +201,7 @@ const Home = ({ onMenuClick }: HomeProps = {}) => {
                 </SelectContent>
               </Select>
               <Select value={selectedLanguage} onValueChange={setSelectedLanguage}>
-                <SelectTrigger className="flex-1 md:w-32 bg-secondary border-border text-sm">
+                <SelectTrigger className="flex-1 sm:w-[120px] md:w-[140px] bg-secondary/50 border-border/50 text-xs sm:text-sm">
                   <SelectValue placeholder="Language" />
                 </SelectTrigger>
                 <SelectContent className="bg-popover border-border z-50">
@@ -219,22 +218,22 @@ const Home = ({ onMenuClick }: HomeProps = {}) => {
       </div>
 
       {/* Main Content */}
-      <div className="px-4 md:px-6 lg:px-8 py-6 space-y-8">
+      <div className="px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-5 md:py-6 space-y-6 sm:space-y-8 md:space-y-10">
         {/* Jump Back In Section */}
         {jumpBackIn.length > 0 && (
           <section className="animate-fade-in">
-            <div className="flex items-center justify-between mb-5">
-              <h2 className="text-2xl md:text-3xl font-bold text-foreground">Jump Back In</h2>
+            <div className="flex items-center justify-between mb-3 sm:mb-4 md:mb-5">
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground">Jump Back In</h2>
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2 sm:gap-3 md:gap-4">
               {jumpBackIn.map((song, index) => (
                 <div
                   key={song.id}
-                  className="group relative bg-card/50 rounded-lg p-3 hover:bg-card transition-all cursor-pointer animate-fade-in border border-border/50"
+                  className="group relative bg-card rounded-lg p-2 sm:p-3 md:p-4 hover:bg-card/80 transition-all cursor-pointer animate-fade-in"
                   style={{ animationDelay: `${index * 0.05}s` }}
                   onClick={() => handlePlay(song)}
                 >
-                  <div className="relative aspect-square mb-3 rounded-md overflow-hidden">
+                  <div className="relative aspect-square mb-2 sm:mb-3 rounded overflow-hidden">
                     <img
                       src={song.imageUrl}
                       alt={song.songName}
@@ -243,31 +242,31 @@ const Home = ({ onMenuClick }: HomeProps = {}) => {
                     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                       <Button
                         size="icon"
-                        className="w-12 h-12 rounded-full shadow-lg"
+                        className="w-10 h-10 sm:w-12 sm:h-12 rounded-full shadow-lg"
                       >
-                        <Play className="w-5 h-5 fill-current ml-0.5" />
+                        <Play className="w-4 h-4 sm:w-5 sm:h-5 fill-current ml-0.5" />
                       </Button>
                     </div>
                   </div>
-                  <h3 className="font-semibold text-sm truncate mb-1">{song.songName}</h3>
-                  <p className="text-xs text-muted-foreground truncate">{song.artistName}</p>
+                  <h3 className="font-semibold text-xs sm:text-sm truncate mb-0.5 sm:mb-1">{song.songName}</h3>
+                  <p className="text-[10px] sm:text-xs text-muted-foreground truncate">{song.artistName}</p>
                 </div>
               ))}
             </div>
           </section>
         )}
 
-        {/* Made For You Section */}
+        {/* Daily Mixes Section */}
         {dailyMixes.length > 0 && (
           <section className="animate-fade-in" style={{ animationDelay: "0.1s" }}>
-            <div className="flex items-center justify-between mb-5">
-              <h2 className="text-2xl md:text-3xl font-bold text-foreground">Made For You</h2>
+            <div className="flex items-center justify-between mb-3 sm:mb-4 md:mb-5">
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground">Made For You</h2>
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4 md:gap-5">
               {dailyMixes.map((song, index) => (
                 <div
                   key={song.id}
-                  className="group relative bg-card/50 rounded-lg p-4 hover:bg-card transition-all cursor-pointer animate-fade-in border border-border/50"
+                  className="group relative bg-gradient-to-br from-card to-card/50 rounded-lg p-3 sm:p-4 hover:from-card/90 hover:to-card/70 transition-all cursor-pointer animate-fade-in"
                   style={{ animationDelay: `${index * 0.05}s` }}
                   onClick={() => handlePlay(song)}
                 >
@@ -288,28 +287,36 @@ const Home = ({ onMenuClick }: HomeProps = {}) => {
 
         {/* All Songs Section */}
         <section className="animate-fade-in" style={{ animationDelay: "0.2s" }}>
-          <div className="flex items-center justify-between mb-5">
-            <h2 className="text-2xl md:text-3xl font-bold text-foreground">
-              All Songs {filteredSongs.length > 0 && `(${filteredSongs.length})`}
-            </h2>
+          <div className="flex items-center justify-between mb-3 sm:mb-4 md:mb-5">
+            <div>
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground mb-1">Browse All</h2>
+              <p className="text-xs sm:text-sm text-muted-foreground">
+                {filteredSongs.length} {filteredSongs.length === 1 ? "song" : "songs"} available
+              </p>
+            </div>
           </div>
 
           {filteredSongs.length === 0 ? (
-            <div className="text-center py-20">
-              <p className="text-lg text-muted-foreground">No songs found</p>
-              <p className="text-sm text-muted-foreground mt-2">Try adjusting your search or filters</p>
+            <div className="text-center py-12 sm:py-16 md:py-20">
+              <p className="text-lg sm:text-xl text-muted-foreground">No songs found</p>
+              <p className="text-xs sm:text-sm text-muted-foreground mt-2">Try adjusting your search or filters</p>
             </div>
           ) : (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
               {filteredSongs.map((song, index) => (
-                <SongCard
+                <div
                   key={song.id}
-                  song={song}
-                  onPlay={handlePlay}
-                  onDownload={handleDownload}
-                  onDelete={isAdmin ? handleDelete : undefined}
-                  isAdmin={isAdmin}
-                />
+                  className="animate-fade-in"
+                  style={{ animationDelay: `${Math.min(index * 0.02, 0.5)}s` }}
+                >
+                  <SongCard
+                    song={song}
+                    onPlay={handlePlay}
+                    onDownload={handleDownload}
+                    onDelete={isAdmin ? handleDelete : undefined}
+                    isAdmin={isAdmin}
+                  />
+                </div>
               ))}
             </div>
           )}
