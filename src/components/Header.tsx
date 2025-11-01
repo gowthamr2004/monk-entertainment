@@ -16,6 +16,7 @@ interface HeaderProps {
   onTypeChange: (value: string) => void;
   selectedLanguage: string;
   onLanguageChange: (value: string) => void;
+  onMenuClick?: () => void;
 }
 
 const Header = ({
@@ -25,10 +26,21 @@ const Header = ({
   onTypeChange,
   selectedLanguage,
   onLanguageChange,
+  onMenuClick,
 }: HeaderProps) => {
   return (
     <header className="sticky top-0 z-40 bg-background/95 backdrop-blur-sm border-b border-border">
       <div className="flex items-center gap-4 p-4">
+        {/* Profile Icon for Mobile/Tablet - triggers sidebar */}
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          className="md:hidden rounded-full flex-shrink-0"
+          onClick={onMenuClick}
+        >
+          <User className="w-6 h-6" />
+        </Button>
+
         {/* Search */}
         <div className="flex-1 max-w-2xl relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />

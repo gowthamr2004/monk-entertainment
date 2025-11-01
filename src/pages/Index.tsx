@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Routes, Route, useLocation, Navigate } from "react-router-dom";
 import Sidebar from "@/components/Sidebar";
 import BottomNav from "@/components/BottomNav";
@@ -14,6 +15,7 @@ import { useAuth } from "@/contexts/AuthContext";
 const Index = () => {
   const { user, loading } = useAuth();
   const location = useLocation();
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   if (loading) {
     return (
@@ -38,10 +40,10 @@ const Index = () => {
 
   return (
     <div className="flex min-h-screen bg-background">
-      <Sidebar />
-      <div className="flex-1 ml-0 sm:ml-[70px] md:ml-[200px] lg:ml-[260px] xl:ml-[280px]">
+      <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
+      <div className="flex-1 ml-0 md:ml-[200px] lg:ml-[260px] xl:ml-[280px]">
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Home onMenuClick={() => setIsSidebarOpen(true)} />} />
           <Route path="/playlist" element={<Playlist />} />
           <Route path="/upload" element={<Upload />} />
           <Route path="/history" element={<History />} />

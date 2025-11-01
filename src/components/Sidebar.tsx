@@ -1,4 +1,4 @@
-import { Home, ListMusic, Upload, History, Info, LogOut, LogIn, Plus, Music, User } from "lucide-react";
+import { Home, ListMusic, Upload, History, Info, LogOut, LogIn, Plus, Music, User, X } from "lucide-react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
@@ -11,7 +11,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-const Sidebar = () => {
+interface SidebarProps {
+  isOpen?: boolean;
+  onClose?: () => void;
+}
+
+const Sidebar = ({ isOpen = false, onClose }: SidebarProps) => {
   const { user, isAdmin } = useAuth();
   const navigate = useNavigate();
 
@@ -37,9 +42,31 @@ const Sidebar = () => {
   };
 
   return (
-    <div className="fixed left-0 top-0 h-screen w-0 sm:w-[70px] md:w-[200px] lg:w-[260px] xl:w-[280px] bg-sidebar-background border-r border-sidebar-border flex flex-col overflow-hidden transition-all duration-300">
-      {/* Logo */}
-      <div className="p-3 sm:p-4 md:p-6 pb-3 sm:pb-4">
+    <>
+      {/* Backdrop - only on mobile/tablet when open */}
+      {isOpen && (
+        <div 
+          className="fixed inset-0 bg-black/60 z-40 md:hidden"
+          onClick={onClose}
+        />
+      )}
+
+      {/* Sidebar */}
+      <div className={`fixed left-0 top-0 h-screen w-[280px] md:w-[200px] lg:w-[260px] xl:w-[280px] bg-sidebar-background border-r border-sidebar-border flex flex-col overflow-hidden transition-transform duration-300 ease-in-out z-50 ${
+        isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
+      }`}>
+        {/* Close button - only on mobile/tablet */}
+        <Button
+          variant="ghost"
+          size="icon"
+          className="absolute top-4 right-4 md:hidden"
+          onClick={onClose}
+        >
+          <X className="w-5 h-5" />
+        </Button>
+
+        {/* Logo */}
+        <div className="p-3 sm:p-4 md:p-6 pb-3 sm:pb-4">
         <h1 className="text-base sm:text-lg md:text-xl font-bold bg-gradient-to-r from-primary to-green-400 bg-clip-text text-transparent truncate">
           <span className="hidden md:inline">MONK ENTERTAINMENT</span>
           <span className="md:hidden">MONK</span>
@@ -142,8 +169,9 @@ const Sidebar = () => {
             © 2024 Monk Entertainment
           </p>
         </div>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
