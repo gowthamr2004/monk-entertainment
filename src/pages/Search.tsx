@@ -3,16 +3,22 @@ import { Search as SearchIcon, User } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import SongCard from "@/components/SongCard";
+import AudioPlayer from "@/components/AudioPlayer";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Song } from "@/types/song";
+import { toast } from "sonner";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface SearchProps {
   onMenuClick?: () => void;
 }
 
 const Search = ({ onMenuClick }: SearchProps = {}) => {
+  const { isAdmin } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
+  const [currentSong, setCurrentSong] = useState<Song | null>(null);
+  const [queue, setQueue] = useState<Song[]>([]);
 
   const { data: songs = [] } = useQuery({
     queryKey: ["songs"],
@@ -41,19 +47,58 @@ const Search = ({ onMenuClick }: SearchProps = {}) => {
   const filteredSongs = songs.filter(
     (song) =>
       song.songName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      song.artistName.toLowerCase().includes(searchQuery.toLowerCase())
+      song.artistName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      song.movieName.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const handlePlay = (song: Song) => {
-    // Play functionality
+    setCurrentSong(song);
+    setQueue(filteredSongs);
+    toast.success(`Now playing: ${song.songName}`);
   };
 
   const handleDownload = (song: Song) => {
-    // Download functionality
+    const link = document.createElement("a");
+    link.href = song.audioUrl;
+    link.download = `${song.songName}.mp3`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    toast.success("Download started!");
+  };
+
+  const handleDelete = async (id: string) => {
+    const { error } = await supabase.from("songs").delete().eq("id", id);
+
+    if (error) {
+      toast.error("Failed to delete song");
+      return;
+    }
+
+    toast.success("Song deleted successfully");
+    // The query will automatically refetch
+  };
+
+  const handleNext = () => {
+    if (!currentSong || queue.length === 0) return;
+    const currentIndex = queue.findIndex((s) => s.id === currentSong.id);
+    if (currentIndex < queue.length - 1) {
+      const nextSong = queue[currentIndex + 1];
+      setCurrentSong(nextSong);
+    }
+  };
+
+  const handlePrevious = () => {
+    if (!currentSong || queue.length === 0) return;
+    const currentIndex = queue.findIndex((s) => s.id === currentSong.id);
+    if (currentIndex > 0) {
+      const prevSong = queue[currentIndex - 1];
+      setCurrentSong(prevSong);
+    }
   };
 
   return (
-    <div className="min-h-screen bg-background p-6 pb-24">
+    <div className="min-h-screen bg-background p-6 pb-32">
       <div className="max-w-7xl mx-auto">
         <div className="flex items-center gap-3 mb-8">
           <Button 
@@ -83,16 +128,24 @@ const Search = ({ onMenuClick }: SearchProps = {}) => {
             <h2 className="text-2xl font-bold mb-4">
               {filteredSongs.length} results for "{searchQuery}"
             </h2>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-              {filteredSongs.map((song) => (
-                <SongCard 
-                  key={song.id} 
-                  song={song}
-                  onPlay={handlePlay}
-                  onDownload={handleDownload}
-                />
-              ))}
-            </div>
+            {filteredSongs.length === 0 ? (
+              <div className="text-center py-12">
+                <p className="text-lg text-muted-foreground">No songs found matching "{searchQuery}"</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+                {filteredSongs.map((song) => (
+                  <SongCard 
+                    key={song.id} 
+                    song={song}
+                    onPlay={handlePlay}
+                    onDownload={handleDownload}
+                    onDelete={isAdmin ? handleDelete : undefined}
+                    isAdmin={isAdmin}
+                  />
+                ))}
+              </div>
+            )}
           </div>
         )}
 
@@ -103,6 +156,15 @@ const Search = ({ onMenuClick }: SearchProps = {}) => {
           </div>
         )}
       </div>
+
+      {currentSong && (
+        <AudioPlayer
+          currentSong={currentSong}
+          queue={queue}
+          onNext={handleNext}
+          onPrevious={handlePrevious}
+        />
+      )}
     </div>
   );
 };
