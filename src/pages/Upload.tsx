@@ -14,9 +14,13 @@ import {
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { Upload as UploadIcon } from "lucide-react";
+import { Upload as UploadIcon, Menu } from "lucide-react";
 
-const Upload = () => {
+interface UploadProps {
+  onMenuClick?: () => void;
+}
+
+const Upload = ({ onMenuClick }: UploadProps) => {
   const navigate = useNavigate();
   const { isAdmin, user } = useAuth();
   const [isUploading, setIsUploading] = useState(false);
@@ -128,12 +132,26 @@ const Upload = () => {
   };
 
   return (
-    <div className="min-h-screen p-8">
-      <div className="max-w-2xl mx-auto">
+    <div className="min-h-screen">
+      <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-border/50">
+        <div className="px-3 sm:px-4 md:px-6 lg:px-8 py-3 sm:py-4">
+          <div className="flex items-center gap-3">
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="rounded-full flex-shrink-0 md:hidden"
+              onClick={onMenuClick}
+            >
+              <Menu className="w-6 h-6" />
+            </Button>
+            <h1 className="text-sm sm:text-base font-bold bg-gradient-to-r from-primary to-green-400 bg-clip-text text-transparent">
+              Upload New Song
+            </h1>
+          </div>
+        </div>
+      </div>
+      <div className="max-w-2xl mx-auto p-8">
         <div className="mb-8 animate-fade-in">
-          <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-primary to-green-400 bg-clip-text text-transparent">
-            Upload New Song
-          </h1>
           <p className="text-muted-foreground">
             Add a new song or BGM to the library
           </p>

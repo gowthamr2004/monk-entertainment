@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
-import { Plus, Music, ArrowLeft, Play } from "lucide-react";
+import { Plus, Music, ArrowLeft, Play, Menu } from "lucide-react";
 import { Playlist as PlaylistType, Song } from "@/types/song";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -10,7 +10,11 @@ import SongCard from "@/components/SongCard";
 import AudioPlayer from "@/components/AudioPlayer";
 import { useAuth } from "@/contexts/AuthContext";
 
-const Playlist = () => {
+interface PlaylistProps {
+  onMenuClick?: () => void;
+}
+
+const Playlist = ({ onMenuClick }: PlaylistProps) => {
   const { isAdmin, user } = useAuth();
   const [playlists, setPlaylists] = useState<PlaylistType[]>([]);
   const [newPlaylistName, setNewPlaylistName] = useState("");
@@ -172,16 +176,30 @@ const Playlist = () => {
 
   if (selectedPlaylist) {
     return (
-      <div className="min-h-screen p-8 pb-32">
-        <div className="max-w-6xl mx-auto">
-          <Button
-            variant="ghost"
-            onClick={() => setSelectedPlaylist(null)}
-            className="mb-6"
-          >
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Playlists
-          </Button>
+      <div className="min-h-screen pb-32">
+        <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-border/50">
+          <div className="px-3 sm:px-4 md:px-6 lg:px-8 py-3 sm:py-4">
+            <div className="flex items-center gap-3">
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="rounded-full flex-shrink-0 md:hidden"
+                onClick={onMenuClick}
+              >
+                <Menu className="w-6 h-6" />
+              </Button>
+              <Button
+                variant="ghost"
+                onClick={() => setSelectedPlaylist(null)}
+                className="gap-2"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                Back to Playlists
+              </Button>
+            </div>
+          </div>
+        </div>
+        <div className="max-w-6xl mx-auto p-8">
 
           <div className="mb-8 animate-fade-in">
             <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-primary to-green-400 bg-clip-text text-transparent">
@@ -247,12 +265,26 @@ const Playlist = () => {
   }
 
   return (
-    <div className="min-h-screen p-8">
-      <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen">
+      <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-border/50">
+        <div className="px-3 sm:px-4 md:px-6 lg:px-8 py-3 sm:py-4">
+          <div className="flex items-center gap-3">
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="rounded-full flex-shrink-0 md:hidden"
+              onClick={onMenuClick}
+            >
+              <Menu className="w-6 h-6" />
+            </Button>
+            <h1 className="text-sm sm:text-base font-bold bg-gradient-to-r from-primary to-green-400 bg-clip-text text-transparent">
+              Your Playlists
+            </h1>
+          </div>
+        </div>
+      </div>
+      <div className="max-w-4xl mx-auto p-8">
         <div className="mb-8 animate-fade-in">
-          <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-primary to-green-400 bg-clip-text text-transparent">
-            Your Playlists
-          </h1>
           <p className="text-muted-foreground">Create and manage your music collections</p>
         </div>
 

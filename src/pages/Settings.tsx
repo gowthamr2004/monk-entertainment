@@ -1,11 +1,15 @@
-import { Settings as SettingsIcon, User, Bell, Lock, HelpCircle, LogOut } from "lucide-react";
+import { Settings as SettingsIcon, User, Bell, Lock, HelpCircle, LogOut, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
-const Settings = () => {
+interface SettingsProps {
+  onMenuClick?: () => void;
+}
+
+const Settings = ({ onMenuClick }: SettingsProps) => {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
 
@@ -47,12 +51,24 @@ const Settings = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-background p-6 pb-24">
-      <div className="max-w-4xl mx-auto">
-        <div className="flex items-center gap-3 mb-8">
-          <SettingsIcon className="w-8 h-8" />
-          <h1 className="text-4xl font-bold">Settings</h1>
+    <div className="min-h-screen bg-background pb-24">
+      <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-border/50">
+        <div className="px-3 sm:px-4 md:px-6 lg:px-8 py-3 sm:py-4">
+          <div className="flex items-center gap-3">
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="rounded-full flex-shrink-0 md:hidden"
+              onClick={onMenuClick}
+            >
+              <Menu className="w-6 h-6" />
+            </Button>
+            <SettingsIcon className="w-6 h-6" />
+            <h1 className="text-sm sm:text-base font-bold">Settings</h1>
+          </div>
         </div>
+      </div>
+      <div className="max-w-4xl mx-auto p-6">
 
         {user && (
           <Card className="mb-6 bg-card/50 border-border/50">
