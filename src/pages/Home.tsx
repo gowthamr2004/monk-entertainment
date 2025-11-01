@@ -177,8 +177,32 @@ const Home = ({ onMenuClick }: HomeProps = {}) => {
             </h1>
           </div>
 
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 md:gap-4">
-            <div className="relative flex-1 max-w-full sm:max-w-md">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <Select value={selectedType} onValueChange={setSelectedType}>
+              <SelectTrigger className="w-[120px] md:w-[140px] bg-secondary/50 border-border/50 text-xs sm:text-sm">
+                <SelectValue placeholder="Type" />
+              </SelectTrigger>
+              <SelectContent className="bg-popover border-border z-50">
+                {types.map((type) => (
+                  <SelectItem key={type} value={type}>
+                    {type === "all" ? "All Types" : type}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Select value={selectedLanguage} onValueChange={setSelectedLanguage}>
+              <SelectTrigger className="w-[120px] md:w-[140px] bg-secondary/50 border-border/50 text-xs sm:text-sm">
+                <SelectValue placeholder="Language" />
+              </SelectTrigger>
+              <SelectContent className="bg-popover border-border z-50">
+                {languages.map((lang) => (
+                  <SelectItem key={lang} value={lang}>
+                    {lang === "all" ? "All Languages" : lang}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <div className="relative flex-1 max-w-md ml-auto">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground" />
               <Input
                 placeholder="Search songs, artists..."
@@ -186,32 +210,6 @@ const Home = ({ onMenuClick }: HomeProps = {}) => {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-9 sm:pl-10 bg-secondary/50 border-border/50 h-10 sm:h-11 rounded-full text-sm"
               />
-            </div>
-            <div className="flex gap-2 sm:gap-3">
-              <Select value={selectedType} onValueChange={setSelectedType}>
-                <SelectTrigger className="flex-1 sm:w-[120px] md:w-[140px] bg-secondary/50 border-border/50 text-xs sm:text-sm">
-                  <SelectValue placeholder="Type" />
-                </SelectTrigger>
-                <SelectContent className="bg-popover border-border z-50">
-                  {types.map((type) => (
-                    <SelectItem key={type} value={type}>
-                      {type === "all" ? "All Types" : type}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <Select value={selectedLanguage} onValueChange={setSelectedLanguage}>
-                <SelectTrigger className="flex-1 sm:w-[120px] md:w-[140px] bg-secondary/50 border-border/50 text-xs sm:text-sm">
-                  <SelectValue placeholder="Language" />
-                </SelectTrigger>
-                <SelectContent className="bg-popover border-border z-50">
-                  {languages.map((lang) => (
-                    <SelectItem key={lang} value={lang}>
-                      {lang === "all" ? "All Languages" : lang}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
             </div>
           </div>
         </div>

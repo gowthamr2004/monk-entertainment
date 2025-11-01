@@ -1,5 +1,4 @@
-import { Search, User } from "lucide-react";
-import { Input } from "@/components/ui/input";
+import { User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -10,8 +9,6 @@ import {
 } from "@/components/ui/select";
 
 interface HeaderProps {
-  searchQuery: string;
-  onSearchChange: (value: string) => void;
   selectedType: string;
   onTypeChange: (value: string) => void;
   selectedLanguage: string;
@@ -20,8 +17,6 @@ interface HeaderProps {
 }
 
 const Header = ({
-  searchQuery,
-  onSearchChange,
   selectedType,
   onTypeChange,
   selectedLanguage,
@@ -40,18 +35,6 @@ const Header = ({
         >
           <User className="w-6 h-6" />
         </Button>
-
-        {/* Search */}
-        <div className="flex-1 max-w-2xl relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-          <Input
-            type="text"
-            placeholder="Search songs, artists, movies..."
-            value={searchQuery}
-            onChange={(e) => onSearchChange(e.target.value)}
-            className="pl-10 bg-secondary border-border"
-          />
-        </div>
 
         {/* Filters */}
         <Select value={selectedType} onValueChange={onTypeChange}>

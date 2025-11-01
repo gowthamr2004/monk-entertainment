@@ -1,10 +1,10 @@
-import { useState } from "react";
-import { Search as SearchIcon, User } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Search as SearchIcon, User, X, Clock } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import SongCard from "@/components/SongCard";
 import AudioPlayer from "@/components/AudioPlayer";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Song } from "@/types/song";
 import { toast } from "sonner";
@@ -15,7 +15,8 @@ interface SearchProps {
 }
 
 const Search = ({ onMenuClick }: SearchProps = {}) => {
-  const { isAdmin } = useAuth();
+  const { isAdmin, user } = useAuth();
+  const queryClient = useQueryClient();
   const [searchQuery, setSearchQuery] = useState("");
   const [currentSong, setCurrentSong] = useState<Song | null>(null);
   const [queue, setQueue] = useState<Song[]>([]);
@@ -43,6 +44,63 @@ const Search = ({ onMenuClick }: SearchProps = {}) => {
       })) as Song[];
     },
   });
+
+  const { data: searchHistory = [] } = useQuery({
+    queryKey: ["search-history", user?.id],
+    queryFn: async () => {
+      if (!user) return [];
+      
+      const { data, error } = await supabase
+        .from("search_history")
+        .select("*")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false })
+        .limit(10);
+
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!user,
+  });
+
+  const saveSearchMutation = useMutation({
+    mutationFn: async (query: string) => {
+      if (!user || !query.trim()) return;
+      
+      const { error } = await supabase
+        .from("search_history")
+        .insert({ user_id: user.id, search_query: query });
+      
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["search-history"] });
+    },
+  });
+
+  const deleteSearchMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase
+        .from("search_history")
+        .delete()
+        .eq("id", id);
+      
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["search-history"] });
+    },
+  });
+
+  useEffect(() => {
+    if (searchQuery.trim() && user) {
+      const timer = setTimeout(() => {
+        saveSearchMutation.mutate(searchQuery);
+      }, 1000);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [searchQuery, user]);
 
   const filteredSongs = songs.filter(
     (song) =>
@@ -149,7 +207,40 @@ const Search = ({ onMenuClick }: SearchProps = {}) => {
           </div>
         )}
 
-        {!searchQuery && (
+        {!searchQuery && searchHistory.length > 0 && (
+          <div>
+            <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
+              <Clock className="w-6 h-6" />
+              Recent Searches
+            </h2>
+            <div className="space-y-2">
+              {searchHistory.map((item) => (
+                <div
+                  key={item.id}
+                  className="flex items-center justify-between p-3 bg-card/50 rounded-lg hover:bg-card transition-colors group"
+                >
+                  <button
+                    onClick={() => setSearchQuery(item.search_query)}
+                    className="flex items-center gap-3 flex-1 text-left"
+                  >
+                    <Clock className="w-4 h-4 text-muted-foreground" />
+                    <span>{item.search_query}</span>
+                  </button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="opacity-0 group-hover:opacity-100 transition-opacity"
+                    onClick={() => deleteSearchMutation.mutate(item.id)}
+                  >
+                    <X className="w-4 h-4" />
+                  </Button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {!searchQuery && searchHistory.length === 0 && (
           <div className="text-center text-muted-foreground mt-12">
             <SearchIcon className="w-16 h-16 mx-auto mb-4 opacity-50" />
             <p>Search for songs, artists, or albums</p>
