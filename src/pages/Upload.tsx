@@ -139,7 +139,7 @@ const Upload = ({ onMenuClick }: UploadProps) => {
             <Button 
               variant="ghost" 
               size="icon" 
-              className="rounded-full flex-shrink-0 md:hidden"
+              className="rounded-full flex-shrink-0"
               onClick={onMenuClick}
             >
               <Menu className="w-6 h-6" />
