@@ -81,7 +81,7 @@ const AudioPlayer = ({ currentSong, queue, onNext, onPrevious }: AudioPlayerProp
   if (!currentSong) return null;
 
   return (
-    <div className="audio-player fixed bottom-0 left-0 sm:left-[70px] md:left-[200px] lg:left-[260px] xl:left-[280px] right-0 z-50 bg-card/95 backdrop-blur-2xl border-t border-border/50 shadow-2xl">
+    <div className="audio-player fixed bottom-16 left-0 right-0 z-50 bg-card/95 backdrop-blur-2xl border-t border-border/50 shadow-2xl">
       <audio
         ref={audioRef}
         onTimeUpdate={handleTimeUpdate}
