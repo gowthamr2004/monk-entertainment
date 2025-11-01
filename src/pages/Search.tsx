@@ -1,17 +1,12 @@
 import { useState } from "react";
-import { Search as SearchIcon, Menu } from "lucide-react";
+import { Search as SearchIcon } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import SongCard from "@/components/SongCard";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Song } from "@/types/song";
 
-interface SearchProps {
-  onMenuClick?: () => void;
-}
-
-const Search = ({ onMenuClick }: SearchProps) => {
+const Search = () => {
   const [searchQuery, setSearchQuery] = useState("");
 
   const { data: songs = [] } = useQuery({
@@ -53,23 +48,10 @@ const Search = ({ onMenuClick }: SearchProps) => {
   };
 
   return (
-    <div className="min-h-screen bg-background pb-24">
-      <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-border/50">
-        <div className="px-3 sm:px-4 md:px-6 lg:px-8 py-3 sm:py-4">
-          <div className="flex items-center gap-3">
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              className="rounded-full flex-shrink-0 md:hidden"
-              onClick={onMenuClick}
-            >
-              <Menu className="w-6 h-6" />
-            </Button>
-            <h1 className="text-sm sm:text-base font-bold">Search</h1>
-          </div>
-        </div>
-      </div>
-      <div className="max-w-7xl mx-auto p-6">
+    <div className="min-h-screen bg-background p-6 pb-24">
+      <div className="max-w-7xl mx-auto">
+        <h1 className="text-4xl font-bold mb-8">Search</h1>
+        
         <div className="relative mb-8">
           <SearchIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
           <Input

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
-import { Clock, Music, Menu } from "lucide-react";
+import { Clock, Music } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface HistorySong {
@@ -14,11 +14,7 @@ interface HistorySong {
   audio_url: string;
 }
 
-interface HistoryProps {
-  onMenuClick?: () => void;
-}
-
-const History = ({ onMenuClick }: HistoryProps) => {
+const History = () => {
   const [history, setHistory] = useState<HistorySong[]>([]);
 
   useEffect(() => {
@@ -34,34 +30,20 @@ const History = ({ onMenuClick }: HistoryProps) => {
   };
 
   return (
-    <div className="min-h-screen">
-      <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-border/50">
-        <div className="px-3 sm:px-4 md:px-6 lg:px-8 py-3 sm:py-4">
-          <div className="flex items-center justify-between gap-3">
-            <div className="flex items-center gap-3">
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                className="rounded-full flex-shrink-0 md:hidden"
-                onClick={onMenuClick}
-              >
-                <Menu className="w-6 h-6" />
-              </Button>
-              <h1 className="text-sm sm:text-base font-bold bg-gradient-to-r from-primary to-green-400 bg-clip-text text-transparent">
-                Recently Played
-              </h1>
-            </div>
-            {history.length > 0 && (
-              <Button variant="outline" size="sm" onClick={handleClearHistory}>
-                Clear History
-              </Button>
-            )}
+    <div className="min-h-screen p-8">
+      <div className="max-w-4xl mx-auto">
+        <div className="mb-8 animate-fade-in flex items-center justify-between">
+          <div>
+            <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-primary to-green-400 bg-clip-text text-transparent">
+              Recently Played
+            </h1>
+            <p className="text-muted-foreground">Your listening history</p>
           </div>
-        </div>
-      </div>
-      <div className="max-w-4xl mx-auto p-8">
-        <div className="mb-8 animate-fade-in">
-          <p className="text-muted-foreground">Your listening history</p>
+          {history.length > 0 && (
+            <Button variant="outline" onClick={handleClearHistory}>
+              Clear History
+            </Button>
+          )}
         </div>
 
         {history.length === 0 ? (

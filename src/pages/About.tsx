@@ -1,12 +1,7 @@
 import { Card } from "@/components/ui/card";
-import { Music, Download, Search, Upload, Users, Headphones, Menu } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Music, Download, Search, Upload, Users, Headphones } from "lucide-react";
 
-interface AboutProps {
-  onMenuClick?: () => void;
-}
-
-const About = ({ onMenuClick }: AboutProps) => {
+const About = () => {
   const features = [
     {
       icon: Search,
@@ -41,25 +36,8 @@ const About = ({ onMenuClick }: AboutProps) => {
   ];
 
   return (
-    <div className="min-h-screen">
-      <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-border/50">
-        <div className="px-3 sm:px-4 md:px-6 lg:px-8 py-3 sm:py-4">
-          <div className="flex items-center gap-3">
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              className="rounded-full flex-shrink-0 md:hidden"
-              onClick={onMenuClick}
-            >
-              <Menu className="w-6 h-6" />
-            </Button>
-            <h1 className="text-sm sm:text-base font-bold bg-gradient-to-r from-primary to-green-400 bg-clip-text text-transparent">
-              About Us
-            </h1>
-          </div>
-        </div>
-      </div>
-      <div className="max-w-6xl mx-auto p-8">
+    <div className="min-h-screen p-8">
+      <div className="max-w-6xl mx-auto">
         {/* Hero Section */}
         <div className="mb-16 text-center animate-fade-in">
           <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-primary to-green-400 bg-clip-text text-transparent">
