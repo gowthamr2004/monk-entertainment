@@ -60,7 +60,7 @@ const Search = ({ onMenuClick }: SearchProps) => {
             <Button 
               variant="ghost" 
               size="icon" 
-              className="rounded-full flex-shrink-0"
+              className="rounded-full flex-shrink-0 md:hidden"
               onClick={onMenuClick}
             >
               <Menu className="w-6 h-6" />
