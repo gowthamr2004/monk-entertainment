@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Play, Pause, SkipBack, SkipForward, Volume2, VolumeX, Shuffle, Repeat, Plus, ListMusic, Mic2, MoreHorizontal, Maximize2 } from "lucide-react";
+import { Play, Pause, SkipBack, SkipForward, Volume2, VolumeX } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Song } from "@/types/song";
@@ -17,8 +17,6 @@ const AudioPlayer = ({ currentSong, queue, onNext, onPrevious }: AudioPlayerProp
   const [duration, setDuration] = useState(0);
   const [volume, setVolume] = useState(1);
   const [isMuted, setIsMuted] = useState(false);
-  const [isShuffled, setIsShuffled] = useState(false);
-  const [repeatMode, setRepeatMode] = useState<'off' | 'all' | 'one'>('off');
   const audioRef = useRef<HTMLAudioElement>(null);
 
   useEffect(() => {
@@ -74,18 +72,6 @@ const AudioPlayer = ({ currentSong, queue, onNext, onPrevious }: AudioPlayerProp
     setIsMuted(!isMuted);
   };
 
-  const toggleShuffle = () => {
-    setIsShuffled(!isShuffled);
-  };
-
-  const toggleRepeat = () => {
-    setRepeatMode(prev => {
-      if (prev === 'off') return 'all';
-      if (prev === 'all') return 'one';
-      return 'off';
-    });
-  };
-
   const formatTime = (time: number) => {
     if (!time || !isFinite(time)) return "0:00";
     const minutes = Math.floor(time / 60);
@@ -96,7 +82,7 @@ const AudioPlayer = ({ currentSong, queue, onNext, onPrevious }: AudioPlayerProp
   if (!currentSong) return null;
 
   return (
-    <div className="audio-player fixed bottom-16 left-0 right-0 z-50 bg-black border-t border-border/50 shadow-2xl">
+    <div className="audio-player fixed bottom-16 left-0 right-0 z-50 bg-card/95 backdrop-blur-2xl border-t border-border/50 shadow-2xl">
       <audio
         ref={audioRef}
         onTimeUpdate={handleTimeUpdate}
@@ -104,143 +90,84 @@ const AudioPlayer = ({ currentSong, queue, onNext, onPrevious }: AudioPlayerProp
         onEnded={onNext}
       />
       
-      <div className="w-full px-4 py-3">
-        <div className="flex items-center justify-between gap-4">
-          {/* Left: Song Info */}
-          <div className="flex items-center gap-3 min-w-[200px] flex-1">
+      {/* Full Width Progress Bar */}
+      <div className="w-full px-0">
+        <Slider
+          value={[currentTime]}
+          max={duration || 100}
+          step={1}
+          onValueChange={handleSeek}
+          className="w-full cursor-pointer rounded-none"
+        />
+      </div>
+
+      <div className="w-full px-3 sm:px-4 md:px-6 py-2 sm:py-3">
+        {/* Time labels */}
+        <div className="flex justify-between text-xs text-muted-foreground mb-2">
+          <span className="font-medium">{formatTime(currentTime)}</span>
+          <span>{formatTime(duration)}</span>
+        </div>
+
+        <div className="flex items-center justify-between gap-3 sm:gap-4 md:gap-6">
+          {/* Song info */}
+          <div className="flex items-center gap-2 sm:gap-3 md:gap-4 flex-1 min-w-0 max-w-[200px] sm:max-w-[250px] md:max-w-[300px]">
             <img
               src={currentSong.imageUrl}
               alt={currentSong.songName}
-              className="w-14 h-14 rounded object-cover shadow-lg flex-shrink-0"
+              className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-md object-cover shadow-lg flex-shrink-0"
             />
-            <div className="min-w-0 flex-1">
-              <h4 className="font-bold text-sm text-foreground truncate">{currentSong.songName}</h4>
-              <p className="text-xs text-muted-foreground truncate">{currentSong.artistName}</p>
-            </div>
-            <Button
-              size="icon"
-              variant="ghost"
-              className="hover:bg-muted h-8 w-8 flex-shrink-0"
-              title="Add to playlist"
-            >
-              <Plus className="w-4 h-4" />
-            </Button>
-          </div>
-
-          {/* Center: Playback Controls */}
-          <div className="flex flex-col items-center gap-2 flex-1 max-w-[700px]">
-            <div className="flex items-center gap-2">
-              <Button
-                size="icon"
-                variant="ghost"
-                onClick={toggleShuffle}
-                className={`hover:bg-muted h-8 w-8 ${isShuffled ? 'text-primary' : ''}`}
-                title="Shuffle"
-              >
-                <Shuffle className="w-4 h-4" />
-              </Button>
-              <Button
-                size="icon"
-                variant="ghost"
-                onClick={onPrevious}
-                disabled={queue.length === 0}
-                className="hover:bg-muted h-8 w-8"
-                title="Previous"
-              >
-                <SkipBack className="w-5 h-5" />
-              </Button>
-              <Button
-                size="icon"
-                variant="default"
-                className="w-10 h-10 rounded-full hover-glow shadow-lg"
-                onClick={togglePlay}
-                title={isPlaying ? "Pause" : "Play"}
-              >
-                {isPlaying ? (
-                  <Pause className="w-5 h-5 fill-current" />
-                ) : (
-                  <Play className="w-5 h-5 fill-current ml-0.5" />
-                )}
-              </Button>
-              <Button
-                size="icon"
-                variant="ghost"
-                onClick={onNext}
-                disabled={queue.length === 0}
-                className="hover:bg-muted h-8 w-8"
-                title="Next"
-              >
-                <SkipForward className="w-5 h-5" />
-              </Button>
-              <Button
-                size="icon"
-                variant="ghost"
-                onClick={toggleRepeat}
-                className={`hover:bg-muted h-8 w-8 ${repeatMode !== 'off' ? 'text-primary' : ''}`}
-                title={repeatMode === 'off' ? 'Repeat' : repeatMode === 'all' ? 'Repeat All' : 'Repeat One'}
-              >
-                <Repeat className="w-4 h-4" />
-                {repeatMode === 'one' && (
-                  <span className="absolute text-[10px] font-bold">1</span>
-                )}
-              </Button>
-            </div>
-
-            {/* Progress Bar */}
-            <div className="flex items-center gap-2 w-full">
-              <span className="text-xs text-muted-foreground font-medium min-w-[40px] text-right">
-                {formatTime(currentTime)}
-              </span>
-              <Slider
-                value={[currentTime]}
-                max={duration || 100}
-                step={1}
-                onValueChange={handleSeek}
-                className="flex-1 cursor-pointer"
-              />
-              <span className="text-xs text-muted-foreground min-w-[40px]">
-                {formatTime(duration)}
-              </span>
+            <div className="min-w-0 flex-1 hidden sm:block">
+              <h4 className="font-bold text-sm sm:text-base text-foreground truncate">{currentSong.songName}</h4>
+              <p className="text-xs sm:text-sm text-muted-foreground truncate">{currentSong.artistName}</p>
             </div>
           </div>
 
-          {/* Right: Additional Controls */}
-          <div className="flex items-center gap-2 min-w-[200px] flex-1 justify-end">
+          {/* Controls */}
+          <div className="flex items-center gap-1 sm:gap-2 md:gap-3 flex-shrink-0">
             <Button
               size="icon"
               variant="ghost"
-              className="hover:bg-muted h-8 w-8"
-              title="Queue"
+              onClick={onPrevious}
+              disabled={queue.length === 0}
+              className="hover:bg-muted h-8 w-8 sm:h-10 sm:w-10"
             >
-              <ListMusic className="w-4 h-4" />
+              <SkipBack className="w-4 h-4 sm:w-5 sm:h-5" />
+            </Button>
+            <Button
+              size="icon"
+              variant="default"
+              className="w-9 h-9 sm:w-10 sm:h-10 md:w-11 md:h-11 rounded-full hover-glow shadow-lg"
+              onClick={togglePlay}
+            >
+              {isPlaying ? (
+                <Pause className="w-4 h-4 sm:w-5 sm:h-5 fill-current" />
+              ) : (
+                <Play className="w-4 h-4 sm:w-5 sm:h-5 fill-current ml-0.5" />
+              )}
             </Button>
             <Button
               size="icon"
               variant="ghost"
-              className="hover:bg-muted h-8 w-8 hidden md:flex"
-              title="Lyrics"
+              onClick={onNext}
+              disabled={queue.length === 0}
+              className="hover:bg-muted h-8 w-8 sm:h-10 sm:w-10"
             >
-              <Mic2 className="w-4 h-4" />
+              <SkipForward className="w-4 h-4 sm:w-5 sm:h-5" />
             </Button>
-            <Button
-              size="icon"
-              variant="ghost"
-              className="hover:bg-muted h-8 w-8 hidden lg:flex"
-              title="More"
-            >
-              <MoreHorizontal className="w-4 h-4" />
-            </Button>
+          </div>
+
+          {/* Volume */}
+          <div className="flex items-center gap-2 sm:gap-3 flex-1 justify-end min-w-0 max-w-[140px] sm:max-w-[160px] md:max-w-[180px]">
             <Button
               size="icon"
               variant="ghost"
               onClick={toggleMute}
-              className="hover:bg-muted h-8 w-8"
-              title={isMuted ? "Unmute" : "Mute"}
+              className="hover:bg-muted h-8 w-8 sm:h-10 sm:w-10 flex-shrink-0"
             >
               {isMuted || volume === 0 ? (
-                <VolumeX className="w-4 h-4" />
+                <VolumeX className="w-4 h-4 sm:w-5 sm:h-5" />
               ) : (
-                <Volume2 className="w-4 h-4" />
+                <Volume2 className="w-4 h-4 sm:w-5 sm:h-5" />
               )}
             </Button>
             <Slider
@@ -248,16 +175,8 @@ const AudioPlayer = ({ currentSong, queue, onNext, onPrevious }: AudioPlayerProp
               max={1}
               step={0.01}
               onValueChange={handleVolumeChange}
-              className="w-24 cursor-pointer hidden sm:block"
+              className="w-full cursor-pointer"
             />
-            <Button
-              size="icon"
-              variant="ghost"
-              className="hover:bg-muted h-8 w-8 hidden xl:flex"
-              title="Fullscreen"
-            >
-              <Maximize2 className="w-4 h-4" />
-            </Button>
           </div>
         </div>
       </div>
