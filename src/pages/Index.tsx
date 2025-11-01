@@ -41,7 +41,7 @@ const Index = () => {
   return (
     <div className="flex min-h-screen bg-background">
       <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
-      <div className="flex-1 ml-0 md:ml-[200px] lg:ml-[260px] xl:ml-[280px]">
+      <main className="flex-1 md:ml-[200px] lg:ml-[260px] xl:ml-[280px]">
         <Routes>
           <Route path="/" element={<Home onMenuClick={() => setIsSidebarOpen(true)} />} />
           <Route path="/playlist" element={<Playlist />} />
@@ -51,7 +51,7 @@ const Index = () => {
           <Route path="/search" element={<Search />} />
           <Route path="/settings" element={<Settings />} />
         </Routes>
-      </div>
+      </main>
       <BottomNav />
     </div>
   );
