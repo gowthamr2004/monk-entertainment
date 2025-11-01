@@ -116,7 +116,7 @@ const Search = ({ onMenuClick }: SearchProps = {}) => {
   });
 
   // Get unique types and languages
-  const types = ["all", ...Array.from(new Set(songs.map((s) => s.type)))];
+  const types = ["all", "Song", "BGM"];
   const languages = ["all", ...Array.from(new Set(songs.map((s) => s.language)))];
 
   const handlePlay = (song: Song) => {
