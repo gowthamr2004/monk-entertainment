@@ -160,17 +160,24 @@ const Home = ({ onMenuClick }: HomeProps = {}) => {
       {/* Header */}
       <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-border/50">
         <div className="px-3 sm:px-4 md:px-6 lg:px-8 py-3 sm:py-4">
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 md:gap-4">
+          <div className="flex items-center justify-between gap-2 sm:gap-3 md:gap-4 mb-2 sm:mb-3 md:hidden">
             {/* Profile Icon for Mobile/Tablet - triggers sidebar */}
             <Button 
               variant="ghost" 
               size="icon" 
-              className="md:hidden rounded-full flex-shrink-0 self-start"
+              className="rounded-full flex-shrink-0"
               onClick={onMenuClick}
             >
               <User className="w-6 h-6" />
             </Button>
 
+            {/* Channel Name on Mobile/Tablet */}
+            <h1 className="text-sm sm:text-base font-bold bg-gradient-to-r from-primary to-green-400 bg-clip-text text-transparent">
+              MONK ENTERTAINMENT
+            </h1>
+          </div>
+
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 md:gap-4">
             <div className="relative flex-1 max-w-full sm:max-w-md">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground" />
               <Input

@@ -52,7 +52,7 @@ const Sidebar = ({ isOpen = false, onClose }: SidebarProps) => {
       )}
 
       {/* Sidebar */}
-      <div className={`fixed left-0 top-0 h-screen w-[280px] md:w-[200px] lg:w-[260px] xl:w-[280px] bg-sidebar-background border-r border-sidebar-border flex flex-col overflow-hidden transition-transform duration-300 ease-in-out z-50 ${
+      <div className={`fixed left-0 top-0 h-screen w-[280px] md:w-[200px] lg:w-[260px] xl:w-[280px] bg-sidebar-background border-r border-sidebar-border flex flex-col overflow-hidden transition-transform duration-300 ease-in-out z-50 shadow-xl ${
         isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
       }`}>
         {/* Close button - only on mobile/tablet */}
@@ -126,7 +126,7 @@ const Sidebar = ({ isOpen = false, onClose }: SidebarProps) => {
       </nav>
 
       {/* User Section */}
-      <div className="p-2 sm:p-3 md:p-4 border-t border-sidebar-border bg-sidebar-background/80">
+      <div className="p-2 sm:p-3 md:p-4 border-t border-sidebar-border bg-sidebar-background">
         {user ? (
           <div className="space-y-2 sm:space-y-3">
             <div className="flex items-center justify-center sm:justify-start gap-0 sm:gap-2 md:gap-3 px-0 sm:px-2">
