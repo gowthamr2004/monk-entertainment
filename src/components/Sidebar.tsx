@@ -65,15 +65,10 @@ const Sidebar = ({ isOpen = false, onClose }: SidebarProps) => {
           <X className="w-5 h-5" />
         </Button>
 
-        {/* Logo */}
-        <div className="p-3 sm:p-4 md:p-6 pb-3 sm:pb-4">
-        <h1 className="text-base sm:text-lg md:text-xl font-bold bg-gradient-to-r from-primary to-green-400 bg-clip-text text-transparent truncate">
-          MONK ENTERTAINMENT
-        </h1>
-      </div>
+        {/* Logo section removed */}
 
       {/* Navigation */}
-      <nav className="flex-1 px-2 sm:px-3 space-y-1">
+      <nav className="flex-1 px-2 sm:px-3 space-y-1 pt-4">
         {/* Create Dropdown */}
         {user && (
           <DropdownMenu>
@@ -162,13 +157,7 @@ const Sidebar = ({ isOpen = false, onClose }: SidebarProps) => {
             </Button>
           </NavLink>
         )}
-        
-        <div className="mt-3 sm:mt-4 pt-2 sm:pt-3 border-t border-sidebar-border/50">
-          <p className="text-xs text-muted-foreground/60 text-center">
-            © 2024 Monk Entertainment
-          </p>
         </div>
-      </div>
       </div>
     </>
   );
