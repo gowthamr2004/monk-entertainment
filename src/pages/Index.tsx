@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Routes, Route, useLocation, Navigate } from "react-router-dom";
 import Sidebar from "@/components/Sidebar";
 import BottomNav from "@/components/BottomNav";
@@ -10,10 +11,13 @@ import Auth from "./Auth";
 import Search from "./Search";
 import Settings from "./Settings";
 import { useAuth } from "@/contexts/AuthContext";
+import { Button } from "@/components/ui/button";
+import { Menu, User } from "lucide-react";
 
 const Index = () => {
   const { user, loading } = useAuth();
   const location = useLocation();
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   if (loading) {
     return (
@@ -38,8 +42,21 @@ const Index = () => {
 
   return (
     <div className="flex min-h-screen bg-background">
-      <Sidebar />
-      <div className="flex-1 ml-0 sm:ml-[70px] md:ml-[200px] lg:ml-[260px] xl:ml-[280px]">
+      <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
+      
+      {/* Menu button - visible when sidebar is closed on mobile */}
+      {!isSidebarOpen && (
+        <Button
+          variant="ghost"
+          size="icon"
+          className="fixed top-4 left-4 z-30 md:hidden rounded-full bg-card/80 backdrop-blur-sm border border-border shadow-lg"
+          onClick={() => setIsSidebarOpen(true)}
+        >
+          <User className="w-5 h-5" />
+        </Button>
+      )}
+      
+      <div className="flex-1 md:ml-[70px] lg:ml-[260px] xl:ml-[280px]">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/playlist" element={<Playlist />} />
