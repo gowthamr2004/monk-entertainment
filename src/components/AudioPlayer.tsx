@@ -90,20 +90,22 @@ const AudioPlayer = ({ currentSong, queue, onNext, onPrevious }: AudioPlayerProp
         onEnded={onNext}
       />
       
+      {/* Full Width Progress Bar */}
+      <div className="w-full px-0">
+        <Slider
+          value={[currentTime]}
+          max={duration || 100}
+          step={1}
+          onValueChange={handleSeek}
+          className="w-full cursor-pointer rounded-none"
+        />
+      </div>
+
       <div className="container mx-auto px-3 sm:px-4 md:px-6 py-2 sm:py-3">
-        {/* Progress bar */}
-        <div className="mb-2 sm:mb-3">
-          <Slider
-            value={[currentTime]}
-            max={duration || 100}
-            step={1}
-            onValueChange={handleSeek}
-            className="w-full cursor-pointer"
-          />
-          <div className="flex justify-between text-xs text-muted-foreground mt-1 sm:mt-1.5">
-            <span className="font-medium">{formatTime(currentTime)}</span>
-            <span>{formatTime(duration)}</span>
-          </div>
+        {/* Time labels */}
+        <div className="flex justify-between text-xs text-muted-foreground mb-2">
+          <span className="font-medium">{formatTime(currentTime)}</span>
+          <span>{formatTime(duration)}</span>
         </div>
 
         <div className="flex items-center justify-between gap-3 sm:gap-4 md:gap-6">
