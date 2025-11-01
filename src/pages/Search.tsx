@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Search as SearchIcon, User, X, Clock } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import SongCard from "@/components/SongCard";
 import AudioPlayer from "@/components/AudioPlayer";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -18,6 +19,8 @@ const Search = ({ onMenuClick }: SearchProps = {}) => {
   const { isAdmin, user } = useAuth();
   const queryClient = useQueryClient();
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedType, setSelectedType] = useState<string>("all");
+  const [selectedLanguage, setSelectedLanguage] = useState<string>("all");
   const [currentSong, setCurrentSong] = useState<Song | null>(null);
   const [queue, setQueue] = useState<Song[]>([]);
 
@@ -102,12 +105,19 @@ const Search = ({ onMenuClick }: SearchProps = {}) => {
     }
   }, [searchQuery, user]);
 
-  const filteredSongs = songs.filter(
-    (song) =>
+  const filteredSongs = songs.filter((song) => {
+    const matchesSearch =
       song.songName.toLowerCase().includes(searchQuery.toLowerCase()) ||
       song.artistName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      song.movieName.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+      song.movieName.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesType = selectedType === "all" || song.type === selectedType;
+    const matchesLanguage = selectedLanguage === "all" || song.language === selectedLanguage;
+    return matchesSearch && matchesType && matchesLanguage;
+  });
+
+  // Get unique types and languages
+  const types = ["all", ...Array.from(new Set(songs.map((s) => s.type)))];
+  const languages = ["all", ...Array.from(new Set(songs.map((s) => s.language)))];
 
   const handlePlay = (song: Song) => {
     setCurrentSong(song);
@@ -170,15 +180,45 @@ const Search = ({ onMenuClick }: SearchProps = {}) => {
           <h1 className="text-4xl font-bold">Search</h1>
         </div>
         
-        <div className="relative mb-8">
-          <SearchIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-          <Input
-            type="text"
-            placeholder="What do you want to listen to?"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-12 h-12 bg-card/50 border-border/50"
-          />
+        <div className="space-y-4 mb-8">
+          <div className="relative">
+            <SearchIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+            <Input
+              type="text"
+              placeholder="What do you want to listen to?"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-12 h-12 bg-card/50 border-border/50"
+            />
+          </div>
+          
+          <div className="flex gap-3">
+            <Select value={selectedType} onValueChange={setSelectedType}>
+              <SelectTrigger className="w-[140px] bg-card/50 border-border/50 z-50">
+                <SelectValue placeholder="Type" />
+              </SelectTrigger>
+              <SelectContent className="bg-popover border-border z-50">
+                {types.map((type) => (
+                  <SelectItem key={type} value={type}>
+                    {type === "all" ? "All Types" : type}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            
+            <Select value={selectedLanguage} onValueChange={setSelectedLanguage}>
+              <SelectTrigger className="w-[140px] bg-card/50 border-border/50 z-50">
+                <SelectValue placeholder="Language" />
+              </SelectTrigger>
+              <SelectContent className="bg-popover border-border z-50">
+                {languages.map((lang) => (
+                  <SelectItem key={lang} value={lang}>
+                    {lang === "all" ? "All Languages" : lang}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </div>
 
         {searchQuery && (

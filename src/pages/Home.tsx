@@ -1,7 +1,5 @@
 import { useState, useEffect } from "react";
-import { Search, Play, User } from "lucide-react";
-import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Play, User } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Song } from "@/types/song";
 import { toast } from "sonner";
@@ -18,9 +16,6 @@ interface HomeProps {
 const Home = ({ onMenuClick }: HomeProps = {}) => {
   const { isAdmin } = useAuth();
   const [songs, setSongs] = useState<Song[]>([]);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedType, setSelectedType] = useState<string>("all");
-  const [selectedLanguage, setSelectedLanguage] = useState<string>("all");
   const [currentSong, setCurrentSong] = useState<Song | null>(null);
   const [queue, setQueue] = useState<Song[]>([]);
   const [history, setHistory] = useState<Song[]>([]);
@@ -73,15 +68,7 @@ const Home = ({ onMenuClick }: HomeProps = {}) => {
     localStorage.setItem("playHistory", JSON.stringify(updatedHistory));
   };
 
-  const filteredSongs = songs.filter((song) => {
-    const matchesSearch =
-      song.songName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      song.artistName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      song.movieName.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesType = selectedType === "all" || song.type === selectedType;
-    const matchesLanguage = selectedLanguage === "all" || song.language === selectedLanguage;
-    return matchesSearch && matchesType && matchesLanguage;
-  });
+  const filteredSongs = songs;
 
   const handlePlay = (song: Song) => {
     setCurrentSong(song);
@@ -132,9 +119,6 @@ const Home = ({ onMenuClick }: HomeProps = {}) => {
     }
   };
 
-  // Get unique types and languages
-  const types = ["all", ...Array.from(new Set(songs.map((s) => s.type)))];
-  const languages = ["all", ...Array.from(new Set(songs.map((s) => s.language)))];
 
   // Group songs for sections
   const recentSongs = filteredSongs.slice(0, 6);
@@ -160,7 +144,7 @@ const Home = ({ onMenuClick }: HomeProps = {}) => {
       {/* Header */}
       <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-border/50">
         <div className="px-3 sm:px-4 md:px-6 lg:px-8 py-3 sm:py-4">
-          <div className="flex items-center justify-between gap-2 sm:gap-3 md:gap-4 mb-2 sm:mb-3">
+          <div className="flex items-center justify-between gap-2 sm:gap-3 md:gap-4">
             {/* Menu Icon - triggers sidebar on all devices */}
             <Button 
               variant="ghost" 
@@ -175,42 +159,6 @@ const Home = ({ onMenuClick }: HomeProps = {}) => {
             <h1 className="text-sm sm:text-base font-bold bg-gradient-to-r from-primary to-green-400 bg-clip-text text-transparent">
               MONK ENTERTAINMENT
             </h1>
-          </div>
-
-          <div className="flex items-center gap-2 sm:gap-3">
-            <Select value={selectedType} onValueChange={setSelectedType}>
-              <SelectTrigger className="w-[120px] md:w-[140px] bg-secondary/50 border-border/50 text-xs sm:text-sm">
-                <SelectValue placeholder="Type" />
-              </SelectTrigger>
-              <SelectContent className="bg-popover border-border z-50">
-                {types.map((type) => (
-                  <SelectItem key={type} value={type}>
-                    {type === "all" ? "All Types" : type}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Select value={selectedLanguage} onValueChange={setSelectedLanguage}>
-              <SelectTrigger className="w-[120px] md:w-[140px] bg-secondary/50 border-border/50 text-xs sm:text-sm">
-                <SelectValue placeholder="Language" />
-              </SelectTrigger>
-              <SelectContent className="bg-popover border-border z-50">
-                {languages.map((lang) => (
-                  <SelectItem key={lang} value={lang}>
-                    {lang === "all" ? "All Languages" : lang}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <div className="relative flex-1 max-w-md ml-auto">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground" />
-              <Input
-                placeholder="Search songs, artists..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-9 sm:pl-10 bg-secondary/50 border-border/50 h-10 sm:h-11 rounded-full text-sm"
-              />
-            </div>
           </div>
         </div>
       </div>
