@@ -49,6 +49,7 @@ export type Database = {
           full_name: string | null
           id: string
           instagram_url: string | null
+          phone_number: string | null
           updated_at: string | null
           youtube_url: string | null
         }
@@ -59,6 +60,7 @@ export type Database = {
           full_name?: string | null
           id: string
           instagram_url?: string | null
+          phone_number?: string | null
           updated_at?: string | null
           youtube_url?: string | null
         }
@@ -69,6 +71,7 @@ export type Database = {
           full_name?: string | null
           id?: string
           instagram_url?: string | null
+          phone_number?: string | null
           updated_at?: string | null
           youtube_url?: string | null
         }
