@@ -7,6 +7,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { useAuth } from "@/contexts/AuthContext";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 interface HeaderProps {
   selectedType: string;
@@ -23,6 +27,27 @@ const Header = ({
   onLanguageChange,
   onMenuClick,
 }: HeaderProps) => {
+  const { user } = useAuth();
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      if (user) {
+        const { data } = await supabase
+          .from("profiles")
+          .select("avatar_url")
+          .eq("id", user.id)
+          .single();
+        
+        if (data?.avatar_url) {
+          setAvatarUrl(data.avatar_url);
+        }
+      }
+    };
+
+    fetchProfile();
+  }, [user]);
+
   return (
     <header className="sticky top-0 z-40 bg-background/95 backdrop-blur-sm border-b border-border">
       <div className="flex items-center gap-4 p-4">
@@ -30,10 +55,15 @@ const Header = ({
         <Button 
           variant="ghost" 
           size="icon" 
-          className="md:hidden rounded-full flex-shrink-0"
+          className="md:hidden rounded-full flex-shrink-0 p-0"
           onClick={onMenuClick}
         >
-          <User className="w-6 h-6" />
+          <Avatar className="w-9 h-9">
+            <AvatarImage src={avatarUrl || undefined} alt="Profile" />
+            <AvatarFallback className="bg-gradient-to-br from-primary to-green-400">
+              <User className="w-5 h-5 text-black" />
+            </AvatarFallback>
+          </Avatar>
         </Button>
 
         {/* Filters */}
@@ -63,8 +93,13 @@ const Header = ({
         </Select>
 
         {/* Profile */}
-        <Button variant="ghost" size="icon" className="rounded-full">
-          <User className="w-5 h-5" />
+        <Button variant="ghost" size="icon" className="rounded-full p-0">
+          <Avatar className="w-8 h-8">
+            <AvatarImage src={avatarUrl || undefined} alt="Profile" />
+            <AvatarFallback className="bg-gradient-to-br from-primary to-green-400">
+              <User className="w-4 h-4 text-black" />
+            </AvatarFallback>
+          </Avatar>
         </Button>
       </div>
     </header>

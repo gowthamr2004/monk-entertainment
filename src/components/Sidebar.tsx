@@ -10,6 +10,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { useEffect, useState } from "react";
 
 interface SidebarProps {
   isOpen?: boolean;
@@ -19,6 +21,25 @@ interface SidebarProps {
 const Sidebar = ({ isOpen = false, onClose }: SidebarProps) => {
   const { user, isAdmin } = useAuth();
   const navigate = useNavigate();
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      if (user) {
+        const { data } = await supabase
+          .from("profiles")
+          .select("avatar_url")
+          .eq("id", user.id)
+          .single();
+        
+        if (data?.avatar_url) {
+          setAvatarUrl(data.avatar_url);
+        }
+      }
+    };
+
+    fetchProfile();
+  }, [user]);
 
   const baseMenuItems = [
     { icon: Home, label: "Home", path: "/" },
@@ -124,9 +145,12 @@ const Sidebar = ({ isOpen = false, onClose }: SidebarProps) => {
         {user ? (
           <div className="space-y-2 sm:space-y-3">
             <div className="flex items-center justify-start gap-2 md:gap-3 px-2">
-              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-primary to-green-400 flex items-center justify-center shadow-lg">
-                <User className="w-4 h-4 sm:w-5 sm:h-5 text-black" />
-              </div>
+              <Avatar className="w-8 h-8 sm:w-10 sm:h-10 shadow-lg">
+                <AvatarImage src={avatarUrl || undefined} alt="Profile" />
+                <AvatarFallback className="bg-gradient-to-br from-primary to-green-400">
+                  <User className="w-4 h-4 sm:w-5 sm:h-5 text-black" />
+                </AvatarFallback>
+              </Avatar>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-semibold text-sidebar-foreground truncate">
                   {user.email?.split('@')[0]}
