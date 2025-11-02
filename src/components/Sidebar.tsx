@@ -76,17 +76,43 @@ const Sidebar = ({ isOpen = false, onClose }: SidebarProps) => {
       <div className={`fixed left-0 top-0 h-screen w-[280px] md:w-[200px] lg:w-[260px] xl:w-[280px] bg-black border-r border-sidebar-border flex flex-col overflow-hidden transition-transform duration-300 ease-in-out z-50 shadow-xl ${
         isOpen ? 'translate-x-0' : '-translate-x-full'
       }`}>
-        {/* Close button */}
-        <Button
-          variant="ghost"
-          size="icon"
-          className="absolute top-4 right-4"
-          onClick={onClose}
-        >
-          <X className="w-5 h-5" />
-        </Button>
-
-        {/* Logo section removed */}
+        {/* Header with User Avatar and Close Button */}
+        <div className="flex items-center justify-between p-4 border-b border-sidebar-border">
+          {user ? (
+            <div className="flex items-center gap-3">
+              <Avatar className="w-10 h-10 shadow-lg">
+                <AvatarImage src={avatarUrl || undefined} alt="Profile" />
+                <AvatarFallback className="bg-gradient-to-br from-primary to-green-400">
+                  <User className="w-5 h-5 text-black" />
+                </AvatarFallback>
+              </Avatar>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-semibold text-sidebar-foreground truncate">
+                  {user.email?.split('@')[0]}
+                </p>
+                {isAdmin && (
+                  <span className="text-xs text-primary font-medium">Admin</span>
+                )}
+              </div>
+            </div>
+          ) : (
+            <div className="flex items-center gap-2">
+              <Avatar className="w-10 h-10 shadow-lg">
+                <AvatarFallback className="bg-muted">
+                  <User className="w-5 h-5" />
+                </AvatarFallback>
+              </Avatar>
+              <span className="text-sm text-muted-foreground">Guest</span>
+            </div>
+          )}
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={onClose}
+          >
+            <X className="w-5 h-5" />
+          </Button>
+        </div>
 
       {/* Navigation */}
       <nav className="flex-1 px-2 sm:px-3 space-y-1 pt-4">
@@ -140,36 +166,18 @@ const Sidebar = ({ isOpen = false, onClose }: SidebarProps) => {
         ))}
       </nav>
 
-      {/* User Section */}
+      {/* Bottom Section */}
       <div className="p-2 sm:p-3 md:p-4 border-t border-sidebar-border bg-black">
         {user ? (
-          <div className="space-y-2 sm:space-y-3">
-            <div className="flex items-center justify-start gap-2 md:gap-3 px-2">
-              <Avatar className="w-8 h-8 sm:w-10 sm:h-10 shadow-lg">
-                <AvatarImage src={avatarUrl || undefined} alt="Profile" />
-                <AvatarFallback className="bg-gradient-to-br from-primary to-green-400">
-                  <User className="w-4 h-4 sm:w-5 sm:h-5 text-black" />
-                </AvatarFallback>
-              </Avatar>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold text-sidebar-foreground truncate">
-                  {user.email?.split('@')[0]}
-                </p>
-                {isAdmin && (
-                  <span className="text-xs text-primary font-medium">Admin Access</span>
-                )}
-              </div>
-            </div>
-            <Button
-              onClick={handleSignOut}
-              variant="ghost"
-              size="sm"
-              className="w-full justify-start gap-2 text-muted-foreground hover:bg-sidebar-accent hover:text-foreground px-2"
-            >
-              <LogOut className="w-4 h-4" />
-              <span className="text-xs sm:text-sm">Sign Out</span>
-            </Button>
-          </div>
+          <Button
+            onClick={handleSignOut}
+            variant="ghost"
+            size="sm"
+            className="w-full justify-start gap-2 text-muted-foreground hover:bg-sidebar-accent hover:text-foreground px-2"
+          >
+            <LogOut className="w-4 h-4" />
+            <span className="text-xs sm:text-sm">Sign Out</span>
+          </Button>
         ) : (
           <NavLink to="/auth">
             <Button
