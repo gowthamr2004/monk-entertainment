@@ -188,7 +188,8 @@ const Home = ({ onMenuClick }: HomeProps = {}) => {
 
   // Group songs for sections
   const recentSongs = filteredSongs.slice(0, 6);
-  const recentHistory = history.slice(0, 4);
+  const recentHistory = history.slice(0, 5);
+  const recentPlaylists = playlists.slice(0, Math.max(0, 5 - recentHistory.length));
 
   if (loading) {
     return (
@@ -239,7 +240,7 @@ const Home = ({ onMenuClick }: HomeProps = {}) => {
       {/* Main Content */}
       <div className="px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-5 md:py-6 space-y-6 sm:space-y-8 md:space-y-10">
         {/* Recent Songs Section */}
-        {(recentHistory.length > 0 || playlists.length > 0) && (
+        {(recentHistory.length > 0 || recentPlaylists.length > 0) && (
           <section className="animate-fade-in">
             <div className="flex items-center justify-between mb-3 sm:mb-4 md:mb-5">
               <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground">Recent songs</h2>
@@ -274,7 +275,7 @@ const Home = ({ onMenuClick }: HomeProps = {}) => {
               ))}
               
               {/* Playlists */}
-              {playlists.map((playlist, index) => (
+              {recentPlaylists.map((playlist, index) => (
                 <div
                   key={playlist.id}
                   className="group relative bg-card rounded-lg p-2 sm:p-3 md:p-4 hover:bg-card/80 transition-all cursor-pointer animate-fade-in"
