@@ -241,7 +241,7 @@ const Home = ({ onMenuClick }: HomeProps = {}) => {
   }
 
   return (
-    <div className="min-h-screen pb-32 bg-gradient-to-b from-background via-background to-sidebar-background">
+    <div className="min-h-screen pb-24 sm:pb-40 bg-gradient-to-b from-background via-background to-sidebar-background">
       <ParticleBackground />
       
       {/* Header */}
