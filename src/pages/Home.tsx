@@ -23,8 +23,6 @@ const Home = ({ onMenuClick }: HomeProps = {}) => {
   const [currentSong, setCurrentSong] = useState<Song | null>(null);
   const [queue, setQueue] = useState<Song[]>([]);
   const [history, setHistory] = useState<Song[]>([]);
-  const [playlists, setPlaylists] = useState<Playlist[]>([]);
-  const [playlistImages, setPlaylistImages] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
 
@@ -32,7 +30,6 @@ const Home = ({ onMenuClick }: HomeProps = {}) => {
     fetchSongs();
     loadHistory();
     if (user) {
-      fetchPlaylists();
       fetchUserAvatar();
     }
   }, [user]);
@@ -85,48 +82,6 @@ const Home = ({ onMenuClick }: HomeProps = {}) => {
     if (savedHistory) {
       setHistory(JSON.parse(savedHistory));
     }
-  };
-
-  const fetchPlaylists = async () => {
-    if (!user) return;
-
-    const { data, error } = await supabase
-      .from("playlists")
-      .select("*")
-      .order("created_at", { ascending: false })
-      .limit(6);
-
-    if (error) return;
-
-    const userPlaylists: Playlist[] = data.map((playlist) => ({
-      id: playlist.id,
-      name: playlist.name,
-      songs: playlist.song_ids,
-      createdAt: new Date(playlist.created_at),
-    }));
-
-    setPlaylists(userPlaylists);
-    fetchPlaylistImages(userPlaylists);
-  };
-
-  const fetchPlaylistImages = async (playlists: Playlist[]) => {
-    const images: Record<string, string> = {};
-    
-    for (const playlist of playlists) {
-      if (playlist.songs.length > 0) {
-        const { data } = await supabase
-          .from("songs")
-          .select("image_url")
-          .eq("id", playlist.songs[0])
-          .single();
-        
-        if (data?.image_url) {
-          images[playlist.id] = data.image_url;
-        }
-      }
-    }
-    
-    setPlaylistImages(images);
   };
 
   const saveToHistory = async (song: Song) => {
@@ -224,11 +179,6 @@ const Home = ({ onMenuClick }: HomeProps = {}) => {
   };
 
 
-  // Group songs for sections
-  const recentSongs = filteredSongs.slice(0, 6);
-  const recentHistory = history.slice(0, 5);
-  const recentPlaylists = playlists.slice(0, Math.max(0, 5 - recentHistory.length));
-
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
@@ -279,78 +229,6 @@ const Home = ({ onMenuClick }: HomeProps = {}) => {
       <div className="px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-5 md:py-6 space-y-6 sm:space-y-8 md:space-y-10">
         {/* Recently Played Section */}
         <RecentlyPlayed onPlay={handlePlay} />
-
-        {/* Recent Songs Section */}
-        {(recentHistory.length > 0 || recentPlaylists.length > 0) && (
-          <section className="animate-fade-in">
-            <div className="flex items-center justify-between mb-3 sm:mb-4 md:mb-5">
-              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground">Recent songs</h2>
-            </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2 sm:gap-3 md:gap-4">
-              {/* Recent Songs */}
-              {recentHistory.map((song, index) => (
-                <div
-                  key={song.id}
-                  className="group relative bg-card rounded-lg p-2 sm:p-3 md:p-4 hover:bg-card/80 transition-all cursor-pointer animate-fade-in"
-                  style={{ animationDelay: `${index * 0.05}s` }}
-                  onClick={() => handlePlay(song)}
-                >
-                  <div className="relative aspect-square mb-2 sm:mb-3 rounded overflow-hidden">
-                    <img
-                      src={song.imageUrl}
-                      alt={song.songName}
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                      <Button
-                        size="icon"
-                        className="w-10 h-10 sm:w-12 sm:h-12 rounded-full shadow-lg"
-                      >
-                        <Play className="w-4 h-4 sm:w-5 sm:h-5 fill-current ml-0.5" />
-                      </Button>
-                    </div>
-                  </div>
-                  <h3 className="font-semibold text-xs sm:text-sm truncate mb-0.5 sm:mb-1">{song.songName}</h3>
-                  <p className="text-[10px] sm:text-xs text-muted-foreground truncate">{song.artistName}</p>
-                </div>
-              ))}
-              
-              {/* Playlists */}
-              {recentPlaylists.map((playlist, index) => (
-                <div
-                  key={playlist.id}
-                  className="group relative bg-card rounded-lg p-2 sm:p-3 md:p-4 hover:bg-card/80 transition-all cursor-pointer animate-fade-in"
-                  style={{ animationDelay: `${(recentHistory.length + index) * 0.05}s` }}
-                  onClick={() => navigate('/playlist')}
-                >
-                  <div className="relative aspect-square mb-2 sm:mb-3 rounded overflow-hidden bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center">
-                    {playlistImages[playlist.id] ? (
-                      <img 
-                        src={playlistImages[playlist.id]} 
-                        alt={playlist.name}
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <Music className="w-8 h-8 text-primary" />
-                    )}
-                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                      <Button
-                        size="icon"
-                        className="w-10 h-10 sm:w-12 sm:h-12 rounded-full shadow-lg"
-                      >
-                        <Play className="w-4 h-4 sm:w-5 sm:h-5 fill-current ml-0.5" />
-                      </Button>
-                    </div>
-                  </div>
-                  <h3 className="font-semibold text-xs sm:text-sm truncate mb-0.5 sm:mb-1">{playlist.name}</h3>
-                  <p className="text-[10px] sm:text-xs text-muted-foreground truncate">
-                    {playlist.songs.length} {playlist.songs.length === 1 ? "song" : "songs"}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
 
         {/* All Songs Section */}
         <section className="animate-fade-in" style={{ animationDelay: "0.2s" }}>
