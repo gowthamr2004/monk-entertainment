@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { Music, Mail, Lock, User as UserIcon, Phone, ArrowLeft } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import ParticleBackground from "@/components/ParticleBackground";
@@ -156,9 +157,19 @@ const Auth = () => {
           </div>
 
         <Tabs defaultValue="signin" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 mb-6">
-            <TabsTrigger value="signin">Sign In</TabsTrigger>
-            <TabsTrigger value="signup">Sign Up</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-2 mb-6 p-1 bg-secondary/50 h-11">
+            <TabsTrigger 
+              value="signin" 
+              className="data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm transition-all"
+            >
+              Sign In
+            </TabsTrigger>
+            <TabsTrigger 
+              value="signup"
+              className="data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm transition-all"
+            >
+              Sign Up
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="signin">
@@ -235,26 +246,34 @@ const Auth = () => {
                           {resetMethod === "email" ? (
                             <div className="space-y-2">
                               <Label htmlFor="reset-email">Email Address</Label>
-                              <Input
-                                id="reset-email"
-                                type="email"
-                                placeholder="you@example.com"
-                                value={resetEmail}
-                                onChange={(e) => setResetEmail(e.target.value)}
-                                required
-                              />
+                              <div className="relative">
+                                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground z-10" />
+                                <Input
+                                  id="reset-email"
+                                  type="email"
+                                  placeholder="you@example.com"
+                                  value={resetEmail}
+                                  onChange={(e) => setResetEmail(e.target.value)}
+                                  className="pl-10 bg-secondary"
+                                  required
+                                />
+                              </div>
                             </div>
                           ) : (
                             <div className="space-y-2">
                               <Label htmlFor="reset-phone">Mobile Number</Label>
-                              <Input
-                                id="reset-phone"
-                                type="tel"
-                                placeholder="+1 (555) 000-0000"
-                                value={resetPhone}
-                                onChange={(e) => setResetPhone(e.target.value)}
-                                required
-                              />
+                              <div className="relative">
+                                <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground z-10" />
+                                <Input
+                                  id="reset-phone"
+                                  type="tel"
+                                  placeholder="+1 (555) 000-0000"
+                                  value={resetPhone}
+                                  onChange={(e) => setResetPhone(e.target.value)}
+                                  className="pl-10 bg-secondary"
+                                  required
+                                />
+                              </div>
                             </div>
                           )}
 
@@ -263,23 +282,99 @@ const Auth = () => {
                             disabled={isLoading || (resetMethod === "email" ? !resetEmail : !resetPhone)}
                             className="w-full"
                           >
-                            {isLoading ? "Sending..." : "Send Reset Link"}
+                            {isLoading ? "Sending..." : "Send Verification Code"}
                           </Button>
                         </div>
                       ) : (
-                        <div className="text-center space-y-4">
-                          <p className="text-sm text-muted-foreground">
-                            We've sent a password reset link to your email. Please check your inbox and follow the instructions.
-                          </p>
+                        <div className="space-y-4">
                           <Button
+                            variant="ghost"
+                            size="sm"
                             onClick={() => {
-                              setForgotPasswordOpen(false);
-                              resetForgotPasswordState();
+                              setOtpSent(false);
+                              setOtp("");
                             }}
-                            className="w-full"
+                            className="p-0 h-auto"
                           >
-                            Close
+                            <ArrowLeft className="w-4 h-4 mr-2" />
+                            Back
                           </Button>
+
+                          <div className="text-center space-y-4">
+                            <div>
+                              <p className="text-sm text-muted-foreground mb-4">
+                                {resetMethod === "email" 
+                                  ? "We've sent a verification code to your email" 
+                                  : "We've sent a verification code to your phone"}
+                              </p>
+                              <p className="text-xs text-muted-foreground mb-4">
+                                {resetMethod === "email" ? resetEmail : resetPhone}
+                              </p>
+                            </div>
+
+                            <div className="space-y-2">
+                              <Label htmlFor="otp" className="text-center block">Enter Verification Code</Label>
+                              <div className="flex justify-center">
+                                <InputOTP 
+                                  maxLength={6} 
+                                  value={otp} 
+                                  onChange={(value) => setOtp(value)}
+                                >
+                                  <InputOTPGroup>
+                                    <InputOTPSlot index={0} />
+                                    <InputOTPSlot index={1} />
+                                    <InputOTPSlot index={2} />
+                                    <InputOTPSlot index={3} />
+                                    <InputOTPSlot index={4} />
+                                    <InputOTPSlot index={5} />
+                                  </InputOTPGroup>
+                                </InputOTP>
+                              </div>
+                            </div>
+
+                            <div className="space-y-2">
+                              <Label htmlFor="new-password">New Password</Label>
+                              <div className="relative">
+                                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground z-10" />
+                                <Input
+                                  id="new-password"
+                                  type="password"
+                                  placeholder="Enter new password"
+                                  value={newPassword}
+                                  onChange={(e) => setNewPassword(e.target.value)}
+                                  className="pl-10 bg-secondary"
+                                  minLength={6}
+                                  required
+                                />
+                              </div>
+                            </div>
+
+                            <Button
+                              onClick={() => {
+                                if (otp.length === 6 && newPassword) {
+                                  toast.info("Password reset functionality will be available soon!");
+                                  setForgotPasswordOpen(false);
+                                  resetForgotPasswordState();
+                                } else {
+                                  toast.error("Please enter a valid OTP and new password");
+                                }
+                              }}
+                              disabled={otp.length !== 6 || !newPassword}
+                              className="w-full"
+                            >
+                              Reset Password
+                            </Button>
+
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={handleSendOTP}
+                              disabled={isLoading}
+                              className="w-full text-xs"
+                            >
+                              Resend Code
+                            </Button>
+                          </div>
                         </div>
                       )}
                     </DialogContent>
