@@ -1,4 +1,4 @@
-import { Settings as SettingsIcon, LogOut, Upload, Instagram, Youtube } from "lucide-react";
+import { Settings as SettingsIcon, LogOut, Upload, Instagram, Youtube, Edit, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -24,6 +24,8 @@ const Settings = ({ onMenuClick }: SettingsProps = {}) => {
   const youtubeUrl = "https://youtube.com/@monkentertainment1163?si=jeZWuqOZFIPoZljT";
   const [uploading, setUploading] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [originalUsername, setOriginalUsername] = useState("");
 
   useEffect(() => {
     if (user) {
@@ -47,6 +49,7 @@ const Settings = ({ onMenuClick }: SettingsProps = {}) => {
 
     if (data) {
       setUsername(data.full_name || "");
+      setOriginalUsername(data.full_name || "");
       setAvatarUrl(data.avatar_url || "");
     }
   };
@@ -108,6 +111,8 @@ const Settings = ({ onMenuClick }: SettingsProps = {}) => {
 
       if (error) throw error;
 
+      setOriginalUsername(username);
+      setIsEditing(false);
       toast.success("Profile updated successfully");
     } catch (error) {
       toast.error("Failed to update profile");
@@ -115,6 +120,11 @@ const Settings = ({ onMenuClick }: SettingsProps = {}) => {
     } finally {
       setSaving(false);
     }
+  };
+
+  const handleCancelEdit = () => {
+    setUsername(originalUsername);
+    setIsEditing(false);
   };
 
   const handleSignOut = async () => {
@@ -186,15 +196,50 @@ const Settings = ({ onMenuClick }: SettingsProps = {}) => {
 
             {/* Username (Editable) */}
             <div className="space-y-2">
-              <Label htmlFor="username">Username</Label>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="username">Username</Label>
+                {!isEditing && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setIsEditing(true)}
+                  >
+                    <Edit className="w-4 h-4 mr-2" />
+                    Edit
+                  </Button>
+                )}
+              </div>
               <Input
                 id="username"
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 placeholder="Enter your username"
+                disabled={!isEditing}
+                className={!isEditing ? "bg-muted" : ""}
               />
             </div>
+
+            {/* Save/Cancel Buttons (Only in Edit Mode) */}
+            {isEditing && (
+              <div className="flex gap-2">
+                <Button
+                  onClick={handleSaveProfile}
+                  disabled={saving}
+                  className="flex-1"
+                >
+                  {saving ? "Saving..." : "Save Changes"}
+                </Button>
+                <Button
+                  onClick={handleCancelEdit}
+                  variant="outline"
+                  disabled={saving}
+                >
+                  <X className="w-4 h-4 mr-2" />
+                  Cancel
+                </Button>
+              </div>
+            )}
 
             {/* About Section */}
             <div className="space-y-4">
@@ -226,15 +271,6 @@ const Settings = ({ onMenuClick }: SettingsProps = {}) => {
                 </Button>
               </div>
             </div>
-
-            {/* Save Button */}
-            <Button
-              onClick={handleSaveProfile}
-              disabled={saving}
-              className="w-full"
-            >
-              {saving ? "Saving..." : "Save Changes"}
-            </Button>
           </CardContent>
         </Card>
 
