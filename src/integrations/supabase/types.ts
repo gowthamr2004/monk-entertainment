@@ -14,38 +14,6 @@ export type Database = {
   }
   public: {
     Tables: {
-      play_history: {
-        Row: {
-          created_at: string
-          id: string
-          played_at: string
-          song_id: string
-          user_id: string
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          played_at?: string
-          song_id: string
-          user_id: string
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          played_at?: string
-          song_id?: string
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "play_history_song_id_fkey"
-            columns: ["song_id"]
-            isOneToOne: false
-            referencedRelation: "songs"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       playlists: {
         Row: {
           created_at: string
