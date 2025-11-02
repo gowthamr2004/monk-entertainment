@@ -165,14 +165,33 @@ const Playlist = ({ onMenuClick }: PlaylistProps = {}) => {
     setQueue(playlistSongs);
   };
 
-  const handleDownload = (song: Song) => {
-    const link = document.createElement("a");
-    link.href = song.audioUrl;
-    link.download = `${song.songName}.mp3`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    toast.success("Download started!");
+  const handleDownload = async (song: Song) => {
+    try {
+      toast.info("Starting download...");
+      
+      // Fetch the audio file as a blob
+      const response = await fetch(song.audioUrl);
+      const blob = await response.blob();
+      
+      // Create a temporary URL for the blob
+      const blobUrl = window.URL.createObjectURL(blob);
+      
+      // Create a temporary link and trigger download
+      const link = document.createElement("a");
+      link.href = blobUrl;
+      link.download = `${song.songName} - ${song.artistName}.mp3`;
+      document.body.appendChild(link);
+      link.click();
+      
+      // Cleanup
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(blobUrl);
+      
+      toast.success("Download completed!");
+    } catch (error) {
+      console.error("Download error:", error);
+      toast.error("Failed to download. Please try again.");
+    }
   };
 
   const handlePlayAll = () => {
