@@ -205,19 +205,20 @@ const Auth = () => {
                         <div className="space-y-3">
                           <Button
                             variant="outline"
-                            className="w-full justify-start gap-3"
+                            className="w-full justify-start gap-3 h-11"
                             onClick={() => setResetMethod("email")}
                           >
-                            <Mail className="w-5 h-5" />
-                            <span>Reset via Email</span>
+                            <Mail className="w-5 h-5 flex-shrink-0" />
+                            <span className="text-left">Reset via Email</span>
                           </Button>
                           <Button
                             variant="outline"
-                            className="w-full justify-start gap-3"
+                            className="w-full justify-start gap-3 h-11"
                             onClick={() => setResetMethod("phone")}
+                            disabled
                           >
-                            <Phone className="w-5 h-5" />
-                            <span>Reset via Mobile (Coming Soon)</span>
+                            <Phone className="w-5 h-5 flex-shrink-0" />
+                            <span className="text-left">Reset via Mobile (Coming Soon)</span>
                           </Button>
                         </div>
                       ) : !otpSent ? (
