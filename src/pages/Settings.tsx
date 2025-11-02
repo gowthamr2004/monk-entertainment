@@ -145,7 +145,7 @@ const Settings = ({ onMenuClick }: SettingsProps = {}) => {
   };
 
   return (
-    <div className="min-h-screen bg-background p-4 sm:p-6 pb-24">
+    <div className="min-h-screen bg-background p-4 sm:p-6 pb-32 md:pb-24">
       <div className="max-w-2xl mx-auto">
         <div className="flex items-center gap-2 sm:gap-3 mb-6 sm:mb-8">
           <SettingsIcon className="w-6 h-6 sm:w-8 sm:h-8" />
