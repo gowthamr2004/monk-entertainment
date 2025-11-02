@@ -22,18 +22,24 @@ const Sidebar = ({ isOpen = false, onClose }: SidebarProps) => {
   const { user, isAdmin } = useAuth();
   const navigate = useNavigate();
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [username, setUsername] = useState<string>("");
 
   useEffect(() => {
     const fetchProfile = async () => {
       if (user) {
         const { data } = await supabase
           .from("profiles")
-          .select("avatar_url")
+          .select("avatar_url, full_name")
           .eq("id", user.id)
           .single();
         
-        if (data?.avatar_url) {
-          setAvatarUrl(data.avatar_url);
+        if (data) {
+          if (data.avatar_url) {
+            setAvatarUrl(data.avatar_url);
+          }
+          if (data.full_name) {
+            setUsername(data.full_name);
+          }
         }
       }
     };
@@ -88,7 +94,7 @@ const Sidebar = ({ isOpen = false, onClose }: SidebarProps) => {
               </Avatar>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-semibold text-sidebar-foreground truncate">
-                  {user.email?.split('@')[0]}
+                  {username || user.email?.split('@')[0]}
                 </p>
                 {isAdmin && (
                   <span className="text-xs text-primary font-medium">Admin</span>
