@@ -48,9 +48,7 @@ export type Database = {
           email: string
           full_name: string | null
           id: string
-          instagram_url: string | null
           updated_at: string | null
-          youtube_url: string | null
         }
         Insert: {
           avatar_url?: string | null
@@ -58,9 +56,7 @@ export type Database = {
           email: string
           full_name?: string | null
           id: string
-          instagram_url?: string | null
           updated_at?: string | null
-          youtube_url?: string | null
         }
         Update: {
           avatar_url?: string | null
@@ -68,9 +64,7 @@ export type Database = {
           email?: string
           full_name?: string | null
           id?: string
-          instagram_url?: string | null
           updated_at?: string | null
-          youtube_url?: string | null
         }
         Relationships: []
       }
