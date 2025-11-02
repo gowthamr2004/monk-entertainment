@@ -20,8 +20,8 @@ const Settings = ({ onMenuClick }: SettingsProps = {}) => {
   
   const [username, setUsername] = useState("");
   const [avatarUrl, setAvatarUrl] = useState("");
-  const [instagramUrl, setInstagramUrl] = useState("https://www.instagram.com/monk_entertainment/");
-  const [youtubeUrl, setYoutubeUrl] = useState("https://youtube.com/@monkentertainment1163?si=jeZWuqOZFIPoZljT");
+  const instagramUrl = "https://www.instagram.com/monk_entertainment/";
+  const youtubeUrl = "https://youtube.com/@monkentertainment1163?si=jeZWuqOZFIPoZljT";
   const [uploading, setUploading] = useState(false);
   const [saving, setSaving] = useState(false);
 
@@ -36,7 +36,7 @@ const Settings = ({ onMenuClick }: SettingsProps = {}) => {
 
     const { data, error } = await supabase
       .from("profiles")
-      .select("full_name, avatar_url, instagram_url, youtube_url")
+      .select("full_name, avatar_url")
       .eq("id", user.id)
       .single();
 
@@ -48,8 +48,6 @@ const Settings = ({ onMenuClick }: SettingsProps = {}) => {
     if (data) {
       setUsername(data.full_name || "");
       setAvatarUrl(data.avatar_url || "");
-      setInstagramUrl(data.instagram_url || "https://www.instagram.com/monk_entertainment/");
-      setYoutubeUrl(data.youtube_url || "https://youtube.com/@monkentertainment1163?si=jeZWuqOZFIPoZljT");
     }
   };
 
@@ -105,8 +103,6 @@ const Settings = ({ onMenuClick }: SettingsProps = {}) => {
         .from("profiles")
         .update({
           full_name: username,
-          instagram_url: instagramUrl,
-          youtube_url: youtubeUrl,
         })
         .eq("id", user.id);
 
@@ -204,34 +200,30 @@ const Settings = ({ onMenuClick }: SettingsProps = {}) => {
             <div className="space-y-4">
               <h3 className="text-lg font-semibold">About</h3>
               
-              {/* Instagram */}
-              <div className="space-y-2">
-                <Label htmlFor="instagram" className="flex items-center gap-2">
-                  <Instagram className="w-4 h-4" />
-                  Instagram
-                </Label>
-                <Input
-                  id="instagram"
-                  type="url"
-                  value={instagramUrl}
-                  onChange={(e) => setInstagramUrl(e.target.value)}
-                  placeholder="https://www.instagram.com/..."
-                />
-              </div>
+              <div className="flex flex-col gap-3">
+                {/* Instagram Button */}
+                <Button
+                  variant="outline"
+                  className="w-full justify-start gap-3"
+                  asChild
+                >
+                  <a href={instagramUrl} target="_blank" rel="noopener noreferrer">
+                    <Instagram className="w-5 h-5" />
+                    <span>Follow on Instagram</span>
+                  </a>
+                </Button>
 
-              {/* YouTube */}
-              <div className="space-y-2">
-                <Label htmlFor="youtube" className="flex items-center gap-2">
-                  <Youtube className="w-4 h-4" />
-                  YouTube
-                </Label>
-                <Input
-                  id="youtube"
-                  type="url"
-                  value={youtubeUrl}
-                  onChange={(e) => setYoutubeUrl(e.target.value)}
-                  placeholder="https://youtube.com/..."
-                />
+                {/* YouTube Button */}
+                <Button
+                  variant="outline"
+                  className="w-full justify-start gap-3"
+                  asChild
+                >
+                  <a href={youtubeUrl} target="_blank" rel="noopener noreferrer">
+                    <Youtube className="w-5 h-5" />
+                    <span>Subscribe on YouTube</span>
+                  </a>
+                </Button>
               </div>
             </div>
 
