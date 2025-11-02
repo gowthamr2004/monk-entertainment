@@ -5,14 +5,26 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Music, Mail, Lock, User as UserIcon } from "lucide-react";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Music, Mail, Lock, User as UserIcon, Phone, ArrowLeft } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import ParticleBackground from "@/components/ParticleBackground";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 const Auth = () => {
   const navigate = useNavigate();
   const { signIn, signUp, signInWithGoogle } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
+  
+  // Forgot Password state
+  const [forgotPasswordOpen, setForgotPasswordOpen] = useState(false);
+  const [resetMethod, setResetMethod] = useState<"email" | "phone" | null>(null);
+  const [resetEmail, setResetEmail] = useState("");
+  const [resetPhone, setResetPhone] = useState("");
+  const [otpSent, setOtpSent] = useState(false);
+  const [otp, setOtp] = useState("");
+  const [newPassword, setNewPassword] = useState("");
 
   // Sign In state
   const [signInEmail, setSignInEmail] = useState("");
@@ -61,25 +73,87 @@ const Auth = () => {
     }
   };
 
+  const handleSendOTP = async () => {
+    setIsLoading(true);
+    try {
+      if (resetMethod === "email") {
+        const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
+          redirectTo: `${window.location.origin}/auth`,
+        });
+        
+        if (error) throw error;
+        
+        toast.success("Password reset link sent to your email!");
+        setOtpSent(true);
+      } else if (resetMethod === "phone") {
+        // For phone OTP, this would require a third-party service like Twilio
+        // For now, we'll show a message
+        toast.info("Phone OTP feature coming soon! Please use email reset.");
+      }
+    } catch (error: any) {
+      toast.error(error.message || "Failed to send reset link");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const resetForgotPasswordState = () => {
+    setResetMethod(null);
+    setResetEmail("");
+    setResetPhone("");
+    setOtpSent(false);
+    setOtp("");
+    setNewPassword("");
+  };
+
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 relative">
+    <div className="min-h-screen flex relative">
       <ParticleBackground />
       
-      <Card className="w-full max-w-md p-8 bg-card/95 backdrop-blur-sm border-border animate-fade-in">
-        <div className="text-center mb-8">
-          <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-primary flex items-center justify-center">
-            <Music className="w-8 h-8 text-primary-foreground" />
+      {/* Left Side - Branding (Hidden on mobile) */}
+      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-primary/20 via-primary/10 to-background relative overflow-hidden">
+        <div className="absolute inset-0 bg-[url('/placeholder.svg')] opacity-5 bg-cover bg-center" />
+        <div className="relative z-10 flex flex-col items-center justify-center w-full p-12">
+          <div className="w-32 h-32 mb-8 rounded-3xl bg-gradient-primary flex items-center justify-center shadow-2xl">
+            <Music className="w-16 h-16 text-primary-foreground" />
           </div>
-          <div className="flex flex-col leading-none items-center justify-center mb-2">
-            <span className="font-bebas text-4xl sm:text-5xl bg-gradient-to-r from-primary to-green-400 bg-clip-text text-transparent tracking-wider">
+          <div className="flex flex-col leading-none items-center justify-center mb-6">
+            <span className="font-bebas text-7xl bg-gradient-to-r from-primary to-green-400 bg-clip-text text-transparent tracking-wider">
               MONK
             </span>
-            <span className="font-bebas text-lg sm:text-xl bg-gradient-to-r from-primary to-green-400 bg-clip-text text-transparent tracking-widest -mt-1">
+            <span className="font-bebas text-3xl bg-gradient-to-r from-primary to-green-400 bg-clip-text text-transparent tracking-widest -mt-2">
               ENTERTAINMENT
             </span>
           </div>
-          <p className="text-muted-foreground">Sign in to access your music</p>
+          <p className="text-xl text-muted-foreground text-center max-w-md">
+            Your gateway to unlimited music streaming
+          </p>
         </div>
+      </div>
+
+      {/* Right Side - Auth Form */}
+      <div className="flex-1 flex items-center justify-center p-4 sm:p-8">
+        <Card className="w-full max-w-md p-6 sm:p-8 bg-card/95 backdrop-blur-sm border-border animate-fade-in">
+          {/* Mobile Logo */}
+          <div className="lg:hidden text-center mb-8">
+            <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-primary flex items-center justify-center">
+              <Music className="w-8 h-8 text-primary-foreground" />
+            </div>
+            <div className="flex flex-col leading-none items-center justify-center mb-2">
+              <span className="font-bebas text-4xl sm:text-5xl bg-gradient-to-r from-primary to-green-400 bg-clip-text text-transparent tracking-wider">
+                MONK
+              </span>
+              <span className="font-bebas text-lg sm:text-xl bg-gradient-to-r from-primary to-green-400 bg-clip-text text-transparent tracking-widest -mt-1">
+                ENTERTAINMENT
+              </span>
+            </div>
+            <p className="text-muted-foreground">Sign in to access your music</p>
+          </div>
+
+          <div className="hidden lg:block text-center mb-8">
+            <h2 className="text-3xl font-bold mb-2">Welcome Back</h2>
+            <p className="text-muted-foreground">Sign in to continue your music journey</p>
+          </div>
 
         <Tabs defaultValue="signin" className="w-full">
           <TabsList className="grid w-full grid-cols-2 mb-6">
@@ -106,7 +180,111 @@ const Auth = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="signin-password">Password</Label>
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="signin-password">Password</Label>
+                  <Dialog open={forgotPasswordOpen} onOpenChange={(open) => {
+                    setForgotPasswordOpen(open);
+                    if (!open) resetForgotPasswordState();
+                  }}>
+                    <DialogTrigger asChild>
+                      <Button variant="link" className="p-0 h-auto text-xs text-primary">
+                        Forgot Password?
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-md">
+                      <DialogHeader>
+                        <DialogTitle>Reset Password</DialogTitle>
+                        <DialogDescription>
+                          {!resetMethod ? "Choose how you want to reset your password" : 
+                           otpSent ? "Check your email for the reset link" :
+                           "Enter your details to receive a reset link"}
+                        </DialogDescription>
+                      </DialogHeader>
+
+                      {!resetMethod ? (
+                        <div className="space-y-3">
+                          <Button
+                            variant="outline"
+                            className="w-full justify-start gap-3"
+                            onClick={() => setResetMethod("email")}
+                          >
+                            <Mail className="w-5 h-5" />
+                            <span>Reset via Email</span>
+                          </Button>
+                          <Button
+                            variant="outline"
+                            className="w-full justify-start gap-3"
+                            onClick={() => setResetMethod("phone")}
+                          >
+                            <Phone className="w-5 h-5" />
+                            <span>Reset via Mobile (Coming Soon)</span>
+                          </Button>
+                        </div>
+                      ) : !otpSent ? (
+                        <div className="space-y-4">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setResetMethod(null)}
+                            className="p-0 h-auto"
+                          >
+                            <ArrowLeft className="w-4 h-4 mr-2" />
+                            Back
+                          </Button>
+
+                          {resetMethod === "email" ? (
+                            <div className="space-y-2">
+                              <Label htmlFor="reset-email">Email Address</Label>
+                              <Input
+                                id="reset-email"
+                                type="email"
+                                placeholder="you@example.com"
+                                value={resetEmail}
+                                onChange={(e) => setResetEmail(e.target.value)}
+                                required
+                              />
+                            </div>
+                          ) : (
+                            <div className="space-y-2">
+                              <Label htmlFor="reset-phone">Mobile Number</Label>
+                              <Input
+                                id="reset-phone"
+                                type="tel"
+                                placeholder="+1 (555) 000-0000"
+                                value={resetPhone}
+                                onChange={(e) => setResetPhone(e.target.value)}
+                                required
+                              />
+                            </div>
+                          )}
+
+                          <Button
+                            onClick={handleSendOTP}
+                            disabled={isLoading || (resetMethod === "email" ? !resetEmail : !resetPhone)}
+                            className="w-full"
+                          >
+                            {isLoading ? "Sending..." : "Send Reset Link"}
+                          </Button>
+                        </div>
+                      ) : (
+                        <div className="text-center space-y-4">
+                          <p className="text-sm text-muted-foreground">
+                            We've sent a password reset link to your email. Please check your inbox and follow the instructions.
+                          </p>
+                          <Button
+                            onClick={() => {
+                              setForgotPasswordOpen(false);
+                              resetForgotPasswordState();
+                            }}
+                            className="w-full"
+                          >
+                            Close
+                          </Button>
+                        </div>
+                      )}
+                    </DialogContent>
+                  </Dialog>
+                </div>
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                   <Input
@@ -228,7 +406,8 @@ const Auth = () => {
           </svg>
           Sign in with Google
         </Button>
-      </Card>
+        </Card>
+      </div>
     </div>
   );
 };
