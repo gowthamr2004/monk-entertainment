@@ -19,13 +19,33 @@ const AudioPlayer = ({ currentSong, queue, onNext, onPrevious }: AudioPlayerProp
   const [isMuted, setIsMuted] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
 
+  // Load saved playback position when song changes
   useEffect(() => {
     if (currentSong && audioRef.current) {
       audioRef.current.src = currentSong.audioUrl;
+      
+      // Try to restore saved position for this song
+      const savedPosition = localStorage.getItem(`song-position-${currentSong.id}`);
+      if (savedPosition) {
+        const position = parseFloat(savedPosition);
+        audioRef.current.currentTime = position;
+      }
+      
       audioRef.current.play();
       setIsPlaying(true);
     }
   }, [currentSong]);
+
+  // Save playback position periodically
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (currentSong && audioRef.current && isPlaying) {
+        localStorage.setItem(`song-position-${currentSong.id}`, audioRef.current.currentTime.toString());
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [currentSong, isPlaying]);
 
   useEffect(() => {
     if (audioRef.current) {
