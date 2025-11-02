@@ -205,10 +205,10 @@ const Home = ({ onMenuClick }: HomeProps = {}) => {
 
             {/* Channel Name */}
             <div className="flex flex-col leading-none">
-              <span className="font-bebas text-4xl sm:text-5xl md:text-6xl lg:text-7xl bg-gradient-to-r from-primary to-green-400 bg-clip-text text-transparent tracking-wider">
+              <span className="font-bebas text-3xl sm:text-4xl md:text-5xl bg-gradient-to-r from-primary to-green-400 bg-clip-text text-transparent tracking-wider">
                 MONK
               </span>
-              <span className="font-bebas text-lg sm:text-xl md:text-2xl lg:text-3xl bg-gradient-to-r from-primary to-green-400 bg-clip-text text-transparent tracking-widest -mt-1 md:-mt-2">
+              <span className="font-bebas text-sm sm:text-base md:text-lg bg-gradient-to-r from-primary to-green-400 bg-clip-text text-transparent tracking-widest -mt-1">
                 ENTERTAINMENT
               </span>
             </div>
