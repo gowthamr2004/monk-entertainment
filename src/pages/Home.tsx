@@ -8,6 +8,7 @@ import AudioPlayer from "@/components/AudioPlayer";
 import ParticleBackground from "@/components/ParticleBackground";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useNavigate } from "react-router-dom";
 
 interface HomeProps {
@@ -24,14 +25,30 @@ const Home = ({ onMenuClick }: HomeProps = {}) => {
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
   const [playlistImages, setPlaylistImages] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
 
   useEffect(() => {
     fetchSongs();
     loadHistory();
     if (user) {
       fetchPlaylists();
+      fetchUserAvatar();
     }
   }, [user]);
+
+  const fetchUserAvatar = async () => {
+    if (!user) return;
+
+    const { data } = await supabase
+      .from("profiles")
+      .select("avatar_url")
+      .eq("id", user.id)
+      .maybeSingle();
+    
+    if (data?.avatar_url) {
+      setAvatarUrl(data.avatar_url);
+    }
+  };
 
   const fetchSongs = async () => {
     setLoading(true);
@@ -193,15 +210,18 @@ const Home = ({ onMenuClick }: HomeProps = {}) => {
       <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-border/50">
         <div className="px-3 sm:px-4 md:px-6 lg:px-8 py-3 sm:py-4">
           <div className="flex items-center gap-3 sm:gap-4">
-            {/* Menu Icon - triggers sidebar on all devices */}
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              className="rounded-full flex-shrink-0"
+            {/* User Avatar - triggers sidebar on all devices */}
+            <button
+              className="flex-shrink-0 rounded-full focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background transition-all hover:ring-2 hover:ring-primary/50"
               onClick={onMenuClick}
             >
-              <User className="w-6 h-6" />
-            </Button>
+              <Avatar className="w-10 h-10 sm:w-12 sm:h-12 cursor-pointer shadow-lg hover:shadow-xl transition-shadow">
+                <AvatarImage src={avatarUrl || undefined} alt="Profile" />
+                <AvatarFallback className="bg-gradient-to-br from-primary to-green-400">
+                  <User className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+                </AvatarFallback>
+              </Avatar>
+            </button>
 
             {/* Channel Name */}
             <div className="flex flex-col leading-none">
