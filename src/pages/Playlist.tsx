@@ -347,18 +347,18 @@ const Playlist = ({ onMenuClick }: PlaylistProps = {}) => {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4">
             {playlists.map((playlist, index) => (
               <Card
                 key={playlist.id}
-                className="p-4 sm:p-6 bg-card border-border hover:bg-card/80 transition-all hover-scale animate-fade-in relative group"
+                className="p-3 bg-card border-border hover:bg-card/80 transition-all hover-scale animate-fade-in relative group"
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
                 <div 
                   className="cursor-pointer"
                   onClick={() => setSelectedPlaylist(playlist)}
                 >
-                  <div className="aspect-square rounded-lg bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center mb-3 sm:mb-4 overflow-hidden">
+                  <div className="aspect-square rounded-lg bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center mb-2 overflow-hidden">
                     {playlistImages[playlist.id] ? (
                       <img 
                         src={playlistImages[playlist.id]} 
@@ -366,24 +366,24 @@ const Playlist = ({ onMenuClick }: PlaylistProps = {}) => {
                         className="w-full h-full object-cover"
                       />
                     ) : (
-                      <Music className="w-10 h-10 sm:w-12 sm:h-12 text-primary" />
+                      <Music className="w-8 h-8 text-primary" />
                     )}
                   </div>
-                  <h3 className="font-semibold text-base sm:text-lg mb-1 truncate">{playlist.name}</h3>
-                  <p className="text-xs sm:text-sm text-muted-foreground">
+                  <h3 className="font-semibold text-sm mb-0.5 truncate">{playlist.name}</h3>
+                  <p className="text-xs text-muted-foreground">
                     {playlist.songs.length} {playlist.songs.length === 1 ? "song" : "songs"}
                   </p>
                 </div>
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
+                  className="absolute top-1 right-1 h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity"
                   onClick={(e) => {
                     e.stopPropagation();
                     setDeletePlaylistId(playlist.id);
                   }}
                 >
-                  <Trash2 className="w-4 h-4 text-destructive" />
+                  <Trash2 className="w-3.5 h-3.5 text-destructive" />
                 </Button>
               </Card>
             ))}
