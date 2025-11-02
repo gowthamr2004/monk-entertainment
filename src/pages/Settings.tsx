@@ -68,10 +68,16 @@ const Settings = ({ onMenuClick }: SettingsProps = {}) => {
 
       const file = event.target.files[0];
       const fileExt = file.name.split(".").pop();
-      const filePath = `${user?.id}-${Math.random()}.${fileExt}`;
+      const filePath = `${user?.id}/${Date.now()}.${fileExt}`;
+
+      // Delete old avatar if exists
+      if (avatarUrl) {
+        const oldPath = avatarUrl.split('/').slice(-2).join('/');
+        await supabase.storage.from("avatars").remove([oldPath]);
+      }
 
       const { error: uploadError } = await supabase.storage
-        .from("song-images")
+        .from("avatars")
         .upload(filePath, file);
 
       if (uploadError) {
@@ -79,7 +85,7 @@ const Settings = ({ onMenuClick }: SettingsProps = {}) => {
       }
 
       const { data: { publicUrl } } = supabase.storage
-        .from("song-images")
+        .from("avatars")
         .getPublicUrl(filePath);
 
       setAvatarUrl(publicUrl);
