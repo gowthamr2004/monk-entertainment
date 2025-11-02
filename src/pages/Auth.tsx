@@ -205,7 +205,7 @@ const Auth = () => {
                         <div className="space-y-3">
                           <Button
                             variant="outline"
-                            className="w-full justify-start gap-3 h-11"
+                            className="w-full justify-start gap-3 h-11 bg-transparent"
                             onClick={() => setResetMethod("email")}
                           >
                             <Mail className="w-5 h-5 flex-shrink-0" />
@@ -213,7 +213,7 @@ const Auth = () => {
                           </Button>
                           <Button
                             variant="outline"
-                            className="w-full justify-start gap-3 h-11"
+                            className="w-full justify-start gap-3 h-11 bg-transparent"
                             onClick={() => setResetMethod("phone")}
                             disabled
                           >
