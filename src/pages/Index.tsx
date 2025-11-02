@@ -33,6 +33,11 @@ const Index = () => {
     return <Navigate to="/" replace />;
   }
 
+  // If user is not logged in, redirect to auth page
+  if (!user && location.pathname !== "/auth") {
+    return <Navigate to="/auth" replace />;
+  }
+
   // Auth page doesn't need sidebar
   if (location.pathname === "/auth") {
     return <Auth />;
