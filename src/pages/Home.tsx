@@ -6,7 +6,6 @@ import { toast } from "sonner";
 import SongCard from "@/components/SongCard";
 import AudioPlayer from "@/components/AudioPlayer";
 import ParticleBackground from "@/components/ParticleBackground";
-import RecentlyPlayed from "@/components/RecentlyPlayed";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
@@ -277,9 +276,6 @@ const Home = ({ onMenuClick }: HomeProps = {}) => {
 
       {/* Main Content */}
       <div className="px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-5 md:py-6 space-y-6 sm:space-y-8 md:space-y-10">
-        {/* Recently Played Section */}
-        <RecentlyPlayed onPlay={handlePlay} />
-
         {/* Recent Songs Section */}
         {(recentHistory.length > 0 || recentPlaylists.length > 0) && (
           <section className="animate-fade-in">
