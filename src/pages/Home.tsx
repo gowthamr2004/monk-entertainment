@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import SongCard from "@/components/SongCard";
 import AudioPlayer from "@/components/AudioPlayer";
 import ParticleBackground from "@/components/ParticleBackground";
+import RecentlyPlayed from "@/components/RecentlyPlayed";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
@@ -128,10 +129,28 @@ const Home = ({ onMenuClick }: HomeProps = {}) => {
     setPlaylistImages(images);
   };
 
-  const saveToHistory = (song: Song) => {
+  const saveToHistory = async (song: Song) => {
+    // Save to local state
     const updatedHistory = [song, ...history.filter((s) => s.id !== song.id)].slice(0, 10);
     setHistory(updatedHistory);
     localStorage.setItem("playHistory", JSON.stringify(updatedHistory));
+
+    // Save to database if user is logged in
+    if (user) {
+      try {
+        // @ts-ignore - play_history table exists but types may not be synced
+        const response: any = await supabase.from("play_history").insert({
+          user_id: user.id,
+          song_id: song.id,
+        });
+        
+        if (response.error) {
+          console.error("Error saving to play history:", response.error);
+        }
+      } catch (error) {
+        console.error("Error saving to play history:", error);
+      }
+    }
   };
 
   const filteredSongs = songs;
@@ -258,6 +277,9 @@ const Home = ({ onMenuClick }: HomeProps = {}) => {
 
       {/* Main Content */}
       <div className="px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-5 md:py-6 space-y-6 sm:space-y-8 md:space-y-10">
+        {/* Recently Played Section */}
+        <RecentlyPlayed onPlay={handlePlay} />
+
         {/* Recent Songs Section */}
         {(recentHistory.length > 0 || recentPlaylists.length > 0) && (
           <section className="animate-fade-in">
