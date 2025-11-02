@@ -1,4 +1,4 @@
-import { Settings as SettingsIcon, LogOut, Upload, Instagram, Youtube, Edit, X } from "lucide-react";
+import { Settings as SettingsIcon, LogOut, Upload, Instagram, Youtube, Edit, X, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -140,6 +140,38 @@ const Settings = ({ onMenuClick }: SettingsProps = {}) => {
     setIsEditing(false);
   };
 
+  const handleRemoveAvatar = async () => {
+    if (!user || !avatarUrl) return;
+
+    try {
+      setUploading(true);
+
+      // Delete avatar from storage
+      const oldPath = avatarUrl.split('/').slice(-2).join('/');
+      const { error: deleteError } = await supabase.storage
+        .from("avatars")
+        .remove([oldPath]);
+
+      if (deleteError) throw deleteError;
+
+      // Update profile to remove avatar_url
+      const { error: updateError } = await supabase
+        .from("profiles")
+        .update({ avatar_url: null })
+        .eq("id", user.id);
+
+      if (updateError) throw updateError;
+
+      setAvatarUrl("");
+      toast.success("Profile picture removed");
+    } catch (error) {
+      toast.error("Error removing avatar");
+      console.error(error);
+    } finally {
+      setUploading(false);
+    }
+  };
+
   const handleSignOut = async () => {
     try {
       await signOut();
@@ -170,7 +202,7 @@ const Settings = ({ onMenuClick }: SettingsProps = {}) => {
                 <AvatarImage src={avatarUrl} alt={username} />
                 <AvatarFallback className="text-lg sm:text-xl">{username?.charAt(0)?.toUpperCase() || "U"}</AvatarFallback>
               </Avatar>
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center justify-center gap-2">
                 <Input
                   type="file"
                   id="avatar"
@@ -188,10 +220,22 @@ const Settings = ({ onMenuClick }: SettingsProps = {}) => {
                   >
                     <span className="cursor-pointer text-xs sm:text-sm">
                       <Upload className="w-3 h-3 sm:w-4 sm:h-4 mr-2" />
-                      {uploading ? "Uploading..." : "Change Picture"}
+                      {uploading ? "Uploading..." : avatarUrl ? "Change" : "Upload"}
                     </span>
                   </Button>
                 </Label>
+                {avatarUrl && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleRemoveAvatar}
+                    disabled={uploading}
+                    className="text-xs sm:text-sm"
+                  >
+                    <Trash2 className="w-3 h-3 sm:w-4 sm:h-4 mr-2" />
+                    Remove
+                  </Button>
+                )}
               </div>
             </div>
 
