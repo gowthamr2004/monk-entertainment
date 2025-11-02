@@ -34,18 +34,16 @@ const Sidebar = ({ isOpen = false, onClose }: SidebarProps) => {
           .single();
         
         if (data) {
-          if (data.avatar_url) {
-            setAvatarUrl(data.avatar_url);
-          }
-          if (data.full_name) {
-            setUsername(data.full_name);
-          }
+          setAvatarUrl(data.avatar_url || null);
+          setUsername(data.full_name || "");
         }
       }
     };
 
-    fetchProfile();
-  }, [user]);
+    if (isOpen) {
+      fetchProfile();
+    }
+  }, [user, isOpen]);
 
   const baseMenuItems = [
     { icon: Home, label: "Home", path: "/" },
