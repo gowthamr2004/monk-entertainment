@@ -2,13 +2,23 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
-import { Plus, Music, ArrowLeft, Play, User } from "lucide-react";
+import { Plus, Music, ArrowLeft, Play, User, Trash2 } from "lucide-react";
 import { Playlist as PlaylistType, Song } from "@/types/song";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import SongCard from "@/components/SongCard";
 import AudioPlayer from "@/components/AudioPlayer";
 import { useAuth } from "@/contexts/AuthContext";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 interface PlaylistProps {
   onMenuClick?: () => void;
@@ -22,6 +32,8 @@ const Playlist = ({ onMenuClick }: PlaylistProps = {}) => {
   const [playlistSongs, setPlaylistSongs] = useState<Song[]>([]);
   const [currentSong, setCurrentSong] = useState<Song | null>(null);
   const [queue, setQueue] = useState<Song[]>([]);
+  const [playlistImages, setPlaylistImages] = useState<Record<string, string>>({});
+  const [deletePlaylistId, setDeletePlaylistId] = useState<string | null>(null);
 
   useEffect(() => {
     if (user) {
@@ -50,6 +62,27 @@ const Playlist = ({ onMenuClick }: PlaylistProps = {}) => {
     }));
 
     setPlaylists(userPlaylists);
+    fetchPlaylistImages(userPlaylists);
+  };
+
+  const fetchPlaylistImages = async (playlists: PlaylistType[]) => {
+    const images: Record<string, string> = {};
+    
+    for (const playlist of playlists) {
+      if (playlist.songs.length > 0) {
+        const { data } = await supabase
+          .from("songs")
+          .select("image_url")
+          .eq("id", playlist.songs[0])
+          .single();
+        
+        if (data?.image_url) {
+          images[playlist.id] = data.image_url;
+        }
+      }
+    }
+    
+    setPlaylistImages(images);
   };
 
   useEffect(() => {
@@ -172,6 +205,22 @@ const Playlist = ({ onMenuClick }: PlaylistProps = {}) => {
     setPlaylists(updatedPlaylists);
     setSelectedPlaylist(updatedPlaylist);
     toast.success("Song removed from playlist");
+  };
+
+  const handleDeletePlaylist = async (playlistId: string) => {
+    const { error } = await supabase
+      .from("playlists")
+      .delete()
+      .eq("id", playlistId);
+
+    if (error) {
+      toast.error("Failed to delete playlist");
+      return;
+    }
+
+    setPlaylists(playlists.filter(p => p.id !== playlistId));
+    setDeletePlaylistId(null);
+    toast.success("Playlist deleted");
   };
 
   if (selectedPlaylist) {
@@ -302,22 +351,65 @@ const Playlist = ({ onMenuClick }: PlaylistProps = {}) => {
             {playlists.map((playlist, index) => (
               <Card
                 key={playlist.id}
-                className="p-4 sm:p-6 bg-card border-border hover:bg-card/80 transition-all cursor-pointer hover-scale animate-fade-in"
+                className="p-4 sm:p-6 bg-card border-border hover:bg-card/80 transition-all hover-scale animate-fade-in relative group"
                 style={{ animationDelay: `${index * 0.1}s` }}
-                onClick={() => setSelectedPlaylist(playlist)}
               >
-                <div className="aspect-square rounded-lg bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center mb-3 sm:mb-4">
-                  <Music className="w-10 h-10 sm:w-12 sm:h-12 text-primary" />
+                <div 
+                  className="cursor-pointer"
+                  onClick={() => setSelectedPlaylist(playlist)}
+                >
+                  <div className="aspect-square rounded-lg bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center mb-3 sm:mb-4 overflow-hidden">
+                    {playlistImages[playlist.id] ? (
+                      <img 
+                        src={playlistImages[playlist.id]} 
+                        alt={playlist.name}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <Music className="w-10 h-10 sm:w-12 sm:h-12 text-primary" />
+                    )}
+                  </div>
+                  <h3 className="font-semibold text-base sm:text-lg mb-1 truncate">{playlist.name}</h3>
+                  <p className="text-xs sm:text-sm text-muted-foreground">
+                    {playlist.songs.length} {playlist.songs.length === 1 ? "song" : "songs"}
+                  </p>
                 </div>
-                <h3 className="font-semibold text-base sm:text-lg mb-1 truncate">{playlist.name}</h3>
-                <p className="text-xs sm:text-sm text-muted-foreground">
-                  {playlist.songs.length} {playlist.songs.length === 1 ? "song" : "songs"}
-                </p>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setDeletePlaylistId(playlist.id);
+                  }}
+                >
+                  <Trash2 className="w-4 h-4 text-destructive" />
+                </Button>
               </Card>
             ))}
           </div>
         )}
       </div>
+
+      <AlertDialog open={!!deletePlaylistId} onOpenChange={() => setDeletePlaylistId(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Playlist</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete this playlist? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => deletePlaylistId && handleDeletePlaylist(deletePlaylistId)}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
