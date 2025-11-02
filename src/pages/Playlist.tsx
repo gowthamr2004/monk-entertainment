@@ -262,7 +262,7 @@ const Playlist = ({ onMenuClick }: PlaylistProps = {}) => {
               </p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4">
               {playlistSongs.map((song) => (
                 <SongCard
                   key={song.id}
