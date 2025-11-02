@@ -70,7 +70,14 @@ const Auth = () => {
           <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-primary flex items-center justify-center">
             <Music className="w-8 h-8 text-primary-foreground" />
           </div>
-          <h1 className="text-3xl font-bold mb-2">MONK ENTERTAINMENT</h1>
+          <div className="flex flex-col leading-none items-center justify-center mb-2">
+            <span className="font-bebas text-4xl sm:text-5xl bg-gradient-to-r from-primary to-green-400 bg-clip-text text-transparent tracking-wider">
+              MONK
+            </span>
+            <span className="font-bebas text-lg sm:text-xl bg-gradient-to-r from-primary to-green-400 bg-clip-text text-transparent tracking-widest -mt-1">
+              ENTERTAINMENT
+            </span>
+          </div>
           <p className="text-muted-foreground">Sign in to access your music</p>
         </div>
 

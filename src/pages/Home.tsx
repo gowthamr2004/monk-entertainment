@@ -204,9 +204,14 @@ const Home = ({ onMenuClick }: HomeProps = {}) => {
             </Button>
 
             {/* Channel Name */}
-            <h1 className="text-sm sm:text-base font-bold bg-gradient-to-r from-primary to-green-400 bg-clip-text text-transparent">
-              MONK ENTERTAINMENT
-            </h1>
+            <div className="flex flex-col leading-none">
+              <span className="font-bebas text-2xl sm:text-3xl md:text-4xl bg-gradient-to-r from-primary to-green-400 bg-clip-text text-transparent tracking-wider">
+                MONK
+              </span>
+              <span className="font-bebas text-xs sm:text-sm md:text-base bg-gradient-to-r from-primary to-green-400 bg-clip-text text-transparent tracking-widest -mt-1">
+                ENTERTAINMENT
+              </span>
+            </div>
           </div>
         </div>
       </div>

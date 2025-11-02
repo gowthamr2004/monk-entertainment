@@ -57,9 +57,14 @@ const About = ({ onMenuClick }: AboutProps = {}) => {
         
         {/* Hero Section */}
         <div className="mb-16 text-center animate-fade-in">
-          <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-primary to-green-400 bg-clip-text text-transparent">
-            MONK ENTERTAINMENT
-          </h1>
+          <div className="flex flex-col leading-none items-center justify-center mb-4">
+            <span className="font-bebas text-6xl sm:text-7xl md:text-8xl bg-gradient-to-r from-primary to-green-400 bg-clip-text text-transparent tracking-wider">
+              MONK
+            </span>
+            <span className="font-bebas text-2xl sm:text-3xl md:text-4xl bg-gradient-to-r from-primary to-green-400 bg-clip-text text-transparent tracking-widest -mt-2">
+              ENTERTAINMENT
+            </span>
+          </div>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             Your ultimate destination for streaming and downloading high-quality music and BGMs
           </p>
